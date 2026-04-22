@@ -1,0 +1,8 @@
+<Defs>
+	<Def Class="HullBaseDef">
+		<defName>HullBase</defName>
+		<label>HullBase</label>
+		<HullPoint>10</HullPoint>
+		<Mass>1</Mass>
+	</Def>
+</Defs>

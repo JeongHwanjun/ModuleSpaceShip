@@ -1,0 +1,18 @@
+<Defs>
+	<Def Class="KineticTurretDef">
+		<defName>KineticTurret</defName>
+		<label>KineticTurret</label>
+		<DisplayName>질량포탑</DisplayName>
+		<hullPoint>10</hullPoint>
+		<mass>1</mass>
+		<linearDamping>0</linearDamping>
+		<angularDamping>0</angularDamping>
+		<Tier>0</Tier>
+        <Turret>
+            <rotationSpeed>180.0</rotationSpeed>
+			<angleThreshold>3.0</angleThreshold>
+			<coolTime>1.0</coolTime>
+			<bulletDefName>Bullet</bulletDefName>
+        </Turret>
+	</Def>
+</Defs>

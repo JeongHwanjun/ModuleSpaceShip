@@ -1,0 +1,12 @@
+<Defs>
+	<Def Class="HullDef">
+		<defName>Hull</defName>
+		<label>Hull</label>
+		<DisplayName>선체</DisplayName>
+		<hullPoint>10</hullPoint>
+		<mass>1</mass>
+		<linearDamping>0</linearDamping>
+		<angularDamping>0</angularDamping>
+		<Tier>0</Tier>
+	</Def>
+</Defs>

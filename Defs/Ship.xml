@@ -1,0 +1,7 @@
+<Defs>
+	<Def Class="ShipDef">
+		<defName>Ship</defName>
+		<label>Ship</label>
+		<DisplayName>함선</DisplayName>
+	</Def>
+</Defs>
