@@ -1,11 +1,11 @@
 using UnityEngine;
 using ModuleSpaceShip.Runtime;
 
-public class HealingEffect : EffectBase
+public class DoTEffect : EffectBase
 {
-    private HealingEffectThing healingEffectThing => (HealingEffectThing)effectThingBase;
+    private DoTEffectThing _DoTEffectThing => (DoTEffectThing)effectThingBase;
 
-    public HealingEffect(HealingEffectThing thing) : base((EffectThingBase)thing)
+    public DoTEffect(HealingEffectThing thing) : base((EffectThingBase)thing)
     {
         Debug.Log($"[HealingEffect] new HealingEffect");
     }
@@ -13,7 +13,7 @@ public class HealingEffect : EffectBase
     public override void WorkOnUpdate(Module targetModule)
     {
         // 업데이트마다 적용되는 효과
-        targetModule.DeliverDamage(healingEffectThing.healAmount * Time.deltaTime * -1);
+        targetModule.DeliverDamage(_DoTEffectThing.damagePerSec * Time.deltaTime);
 
     }
 

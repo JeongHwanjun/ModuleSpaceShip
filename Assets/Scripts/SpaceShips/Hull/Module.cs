@@ -245,8 +245,20 @@ public abstract class Module : BaseMonobehaviour
         }
     }
 
+    // ---- Effect 부여 ----
+    public void AddNewEffect(EffectBase newEffect)
+    {
+        // newEffect 유효성 검사
+        if(newEffect == null)
+        {
+            Debug.LogError($"[Module] Adding New Effect FAILED : newEffect is NULL");
+            return;
+        }
+        effects.Add(newEffect);
+    }
+
     // ---- 파괴 시 호출 ----
-    protected void ModuleDestroyed()
+    protected virtual void ModuleDestroyed()
     {
         // 파괴 플래그 표시
         RequestDestroy();
@@ -273,8 +285,6 @@ public abstract class Module : BaseMonobehaviour
         ClearEffect();
         Destroy(gameObject);
     }
-
-    // ---- 파괴시 
 
     // ---- 디버그 ----
     [ContextMenu("Print Current State")]

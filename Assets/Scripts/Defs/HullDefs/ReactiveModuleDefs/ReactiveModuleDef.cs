@@ -22,7 +22,7 @@ namespace ModuleSpaceShip.Defs
             string physicalRadiusString = GetTag(e, "physicalRadius", "0");
             if(!float.TryParse(physicalRadiusString, out physicalRadius)) throw new Exception($"[ReactiveModuleDef] Invalid value for physicalRadius : {physicalRadius}");
             
-            string gridRadiusNameString = GetTag(e, "gridRadiusName", "Card4");
+            string gridRadiusNameString = GetTag(e, "gridRadiusName", "none");
             if(string.IsNullOrWhiteSpace(gridRadiusNameString)) throw new Exception($"[ReactiveModuleDef] Invalid value for gridRadiusName : {gridRadiusNameString}");
             else gridRadiusName = gridRadiusNameString.Trim();
         }

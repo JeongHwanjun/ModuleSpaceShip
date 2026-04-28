@@ -273,6 +273,14 @@ public class ShipGrid : MonoBehaviour
         return disconnected;
     }
 
+    // ---- 주어진 ShipGrid에 맞는 Module 반환
+    public GameObject GetModuleByGridPos(GridPos targetPos)
+    {
+        // 해당 위치에 모듈이 없다면 null 반환
+        if(!HasModule(targetPos)) return null;
+        return Modules[targetPos];
+    }
+
     // ---- 코어 생성 ----
     [ContextMenu("Spawn Core Module at (0,0)")]
     private void SpawnCoreModule()

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using ModuleSpaceShip.Runtime;
 using UnityEngine;
 
@@ -20,7 +21,8 @@ public class Ship : MonoBehaviour
     private Rigidbody2D rigid;
     private ShipGrid shipGrid;
     public float torque; // 테스트시 가할 회전힘의 강도
-    public Collider2D[] moduleColliders;
+    public Collider2D[] moduleColliders; // 함선을 구성하고 있는 module의 collider2d;
+
 
     // ---- Events ----
     public event Action<Collider2D> OnTryDockAtPort;
@@ -139,6 +141,25 @@ public class Ship : MonoBehaviour
         }
 
         moduleColliders = list.ToArray();
+    }
+
+    // ---- 주어진 Grid를 ShipGrid에 전달하여 해당 위치에 존재하는 Module List반환 ----
+    public Collider2D[] GetModulesByGrid(GridPos[] requestGrid)
+    {
+        if(!shipGrid) return null;
+
+        List<Collider2D> moduleColliders = new();
+        foreach(GridPos grid in requestGrid)
+        {
+            if(!shipGrid.HasModule(grid)) continue;
+            
+            GameObject targetModule = shipGrid.GetModuleByGridPos(grid);
+            if(!targetModule) continue;
+
+            moduleColliders.Add(targetModule.GetComponent<Collider2D>());
+        }
+        
+        return moduleColliders.ToArray();
     }
 
     [ContextMenu("Add AngularForce")]
