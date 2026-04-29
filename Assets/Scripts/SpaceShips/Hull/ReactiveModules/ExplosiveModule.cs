@@ -48,16 +48,22 @@ public class ExplosiveModule : ReactiveModule
     protected override void ModuleDestroyed() // 이 모듈의 파괴가 요청될 경우
     {
         base.ModuleDestroyed();
+        Debug.Log($"[ExplosiveModule] Boom!!! damage : {damage}");
         Collider2D[] targetModules = explosiveModuleThing.useGridRadius ? ship.GetModulesByGrid(gridRadius) : Physics2D.OverlapCircleAll(transform.position,explosiveModuleThing.GetPhysicalRadius());
+        if(targetModules == null) return;
+
         DeliverDamageToTargetModules(targetModules);
     }
 
     private void DeliverDamageToTargetModules(Collider2D[] targetModules)
     {
+        if(targetModules == null) return;
+        // 여기서 포탄도 포함되나봄...
         // 주어진 TargetModules에 DeliverDamage
         foreach(Collider2D targetModule in targetModules)
         {
-            targetModule.GetComponent<Module>().DeliverDamage(damage);
+            Module module = targetModule.GetComponent<Module>();
+            if(module == null) continue;
         }
         // 모션, 효과 출력 등 다양한 작용...
     }
