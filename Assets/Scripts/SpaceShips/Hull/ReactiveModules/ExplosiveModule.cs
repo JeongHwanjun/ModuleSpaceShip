@@ -63,7 +63,8 @@ public class ExplosiveModule : ReactiveModule
         foreach(Collider2D targetModule in targetModules)
         {
             Module module = targetModule.GetComponent<Module>();
-            if(module == null) continue;
+            if(module == null || module == this) continue;
+            module.DeliverDamage(damage);
         }
         // 모션, 효과 출력 등 다양한 작용...
     }
