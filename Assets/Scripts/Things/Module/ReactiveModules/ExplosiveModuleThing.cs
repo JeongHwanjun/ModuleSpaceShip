@@ -4,7 +4,7 @@ using ModuleSpaceShip.Utilities;
 
 namespace ModuleSpaceShip.Runtime
 {
-    public class ExplosiveModuleThing : ReactiveModuleThing
+    public class ExplosiveModuleThing : RadiusReactiveModuleThing
     {
         private ExplosiveModuleDef _explosiveModuleDef => (ExplosiveModuleDef)_def;
         public ExplosiveModuleDef explosiveModuleDef => _explosiveModuleDef;

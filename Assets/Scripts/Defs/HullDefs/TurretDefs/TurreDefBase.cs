@@ -14,12 +14,12 @@ namespace ModuleSpaceShip.Defs
         public override void LoadFromXml(XElement e)
         {
             base.LoadFromXml(e);
-            string TierString = GetTag(e, "Tier", "0");
+            string TierString = GetTag(e, "tier", "0");
             if(!uint.TryParse(TierString, out Tier)) throw new Exception($"[TurretDefBase] Invalid value for Tier : {TierString}");
             
-            XElement Turret = e.Element("Turret");
+            XElement Turret = e.Element("turret");
             if(Turret == null)
-                throw new Exception($"[TurretDefBase] Turret must have <Turret> tag, but '{defName}' has no <Turret>.");
+                throw new Exception($"[TurretDefBase] Turret must have <turret> tag, but '{defName}' has no <turret>.");
             
             // 밑의 얘들도 다 LoadTurretData로 옮겨야 하는 것이 아닌지?
             string rotationSpeedString = GetTag(Turret,"rotationSpeed","1.0");

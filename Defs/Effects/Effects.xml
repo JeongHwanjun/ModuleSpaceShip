@@ -2,7 +2,7 @@
 	<Def Class="HealingEffectDef">
 		<defName>HealingEffect</defName>
 		<label>HealingEffect</label>
-		<DisplayName>회복효과</DisplayName>
+		<displayName>회복효과</displayName>
         <effect>
             <healAmount>2.0</healAmount>
         </effect>

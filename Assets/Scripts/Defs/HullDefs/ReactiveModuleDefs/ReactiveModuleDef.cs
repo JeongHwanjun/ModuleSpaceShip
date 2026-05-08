@@ -8,23 +8,14 @@ namespace ModuleSpaceShip.Defs
     [Serializable]
     public abstract class ReactiveModuleDef : ModuleDef
     {
-        public float physicalRadius = 0; // 물리 상호작용 범위
-        public string gridRadiusName; // 효과 범위 이름 지정. 4칸 - card4 8칸 - card8 이런식
-
         public override void LoadFromXml(XElement e)
         {
             base.LoadFromXml(e);
-            LoadReactionData(e);
+            XElement reaction = e.Element("reaction");
+            if(reaction == null) throw new Exception($"[ReactiveModuleDef] ReactiveModuleDef requires <reaction> tag, but {defName} has no <reaction>.");
+            LoadReactionData(reaction);
         }
 
-        protected void LoadReactionData(XElement e)
-        {
-            string physicalRadiusString = GetTag(e, "physicalRadius", "0");
-            if(!float.TryParse(physicalRadiusString, out physicalRadius)) throw new Exception($"[ReactiveModuleDef] Invalid value for physicalRadius : {physicalRadius}");
-            
-            string gridRadiusNameString = GetTag(e, "gridRadiusName", "none");
-            if(string.IsNullOrWhiteSpace(gridRadiusNameString)) throw new Exception($"[ReactiveModuleDef] Invalid value for gridRadiusName : {gridRadiusNameString}");
-            else gridRadiusName = gridRadiusNameString.Trim();
-        }
+        protected abstract void LoadReactionData(XElement e);
     }
 }

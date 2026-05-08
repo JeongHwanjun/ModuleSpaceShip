@@ -2,11 +2,11 @@
 	<Def Class="HullDef">
 		<defName>Core</defName>
 		<label>Core</label>
-		<DisplayName>코어</DisplayName>
+		<displayName>코어</displayName>
 		<hullPoint>10</hullPoint>
 		<mass>1</mass>
 		<linearDamping>0</linearDamping>
 		<angularDamping>0</angularDamping>
-		<Tier>0</Tier>
+		<tier>0</tier>
 	</Def>
 </Defs>

@@ -7,12 +7,12 @@
 		<mass>1</mass>
 		<linearDamping>0</linearDamping>
 		<angularDamping>0</angularDamping>
-		<Tier>0</Tier>
-        <Turret>
+		<tier>0</tier>
+        <turret>
             <rotationSpeed>180.0</rotationSpeed>
 			<angleThreshold>3.0</angleThreshold>
 			<coolTime>1.0</coolTime>
 			<bulletDefName>Bullet</bulletDefName>
-        </Turret>
+        </turret>
 	</Def>
 </Defs>

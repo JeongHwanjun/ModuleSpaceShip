@@ -2,7 +2,7 @@
 	<Def Class="BulletDef">
 		<defName>Bullet</defName>
 		<label>Bullet</label>
-		<DisplayName>포탄</DisplayName>
+		<displayName>포탄</displayName>
         <damage>4.0</damage>
         <speed>5.0</speed>
 	</Def>

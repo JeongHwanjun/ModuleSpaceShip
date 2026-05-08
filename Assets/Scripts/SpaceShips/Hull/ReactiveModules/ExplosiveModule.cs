@@ -2,23 +2,17 @@ using ModuleSpaceShip.Runtime;
 using UnityEngine;
 using System;
 
-public class ExplosiveModule : ReactiveModule
+public class ExplosiveModule : RadiusReactiveModule
 {
     [DefName("ExplosiveModuleDef")]
     [SerializeField] private string def;
     protected override string DefName => def;
     protected ExplosiveModuleThing explosiveModuleThing => (ExplosiveModuleThing)reactiveModuleThing;
-    private GridPos[] gridRadius;
-    private float physicalRadius;
     private float damage = 0;
 
     public override void Init(ThingBase thingBase)
     {
         base.Init(thingBase);
-        // 범위 획득
-        if(explosiveModuleThing.useGridRadius) gridRadius = explosiveModuleThing.GetGridRadius();
-        else if(explosiveModuleThing.usePhysicalRadius) physicalRadius = explosiveModuleThing.GetPhysicalRadius();
-        else throw new Exception("[ExplosiveModule] Undefined Radius");
         // 데미지 획득
         damage = explosiveModuleThing.damage;
     }
@@ -49,7 +43,8 @@ public class ExplosiveModule : ReactiveModule
     {
         base.ModuleDestroyed();
         Debug.Log($"[ExplosiveModule] Boom!!! damage : {damage}");
-        Collider2D[] targetModules = explosiveModuleThing.useGridRadius ? ship.GetModulesByGrid(gridRadius) : Physics2D.OverlapCircleAll(transform.position,explosiveModuleThing.GetPhysicalRadius());
+        // targetModules 획득
+        GetModulesInRadius();
         if(targetModules == null) return;
 
         DeliverDamageToTargetModules(targetModules);
@@ -58,7 +53,6 @@ public class ExplosiveModule : ReactiveModule
     private void DeliverDamageToTargetModules(Collider2D[] targetModules)
     {
         if(targetModules == null) return;
-        // 여기서 포탄도 포함되나봄...
         // 주어진 TargetModules에 DeliverDamage
         foreach(Collider2D targetModule in targetModules)
         {

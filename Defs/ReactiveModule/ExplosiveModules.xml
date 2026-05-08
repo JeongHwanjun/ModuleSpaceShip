@@ -2,13 +2,15 @@
     <Def Class="ExplosiveModuleDef">
         <defName>ExplosiveModule</defName>
 		<label>ExplosiveModule</label>
-		<DisplayName>폭탄</DisplayName>
+		<displayName>폭탄</displayName>
 		<hullPoint>10</hullPoint>
 		<mass>1</mass>
 		<linearDamping>0</linearDamping>
 		<angularDamping>0</angularDamping>
-		<Tier>0</Tier>
-        <physicalRadius>3.0</physicalRadius>
+		<tier>0</tier>
+        <reaction>
+            <radius>3.0</radius>
+        </reaction>
         <explosion>
             <damage>15</damage>
         </explosion>

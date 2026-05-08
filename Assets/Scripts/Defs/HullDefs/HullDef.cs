@@ -13,8 +13,8 @@ namespace ModuleSpaceShip.Defs
         public override void LoadFromXml(XElement e)
         {
             base.LoadFromXml(e);
-            string TierString = GetTag(e, "Tier", "0");
-            if(!uint.TryParse(TierString, out Tier)) throw new Exception($"[HullDef] Invalid value for Tier : {TierString}");
+            string TierString = GetTag(e, "tier", "0");
+            if(!uint.TryParse(TierString, out Tier)) throw new Exception($"[HullDef] Invalid value for tier : {TierString}");
         }
     }
 } 

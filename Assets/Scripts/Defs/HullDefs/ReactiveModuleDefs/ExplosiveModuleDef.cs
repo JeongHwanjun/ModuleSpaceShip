@@ -4,7 +4,7 @@ using ModuleSpaceShip.Runtime;
 
 namespace ModuleSpaceShip.Defs
 {
-    public class ExplosiveModuleDef : ReactiveModuleDef
+    public class ExplosiveModuleDef : RadiusReactiveModuleDef
     {
         public override Type thingType => typeof(ExplosiveModuleThing);
         public float damage = 0f;
