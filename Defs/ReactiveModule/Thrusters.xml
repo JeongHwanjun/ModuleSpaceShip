@@ -1,0 +1,16 @@
+<Defs>
+    <Def Class="ThrusterDef">
+        <defName>ThrusterModule</defName>
+		<label>ThrusterModule</label>
+		<displayName>추진기</displayName>
+		<hullPoint>10</hullPoint>
+		<mass>1</mass>
+		<linearDamping>0</linearDamping>
+		<angularDamping>0</angularDamping>
+		<tier>0</tier>
+        <reaction></reaction>
+        <thruster>
+            <thrust>1.0</thrust>
+        </thruster>
+    </Def>
+</Defs>

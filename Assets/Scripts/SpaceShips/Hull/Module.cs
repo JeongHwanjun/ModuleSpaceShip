@@ -207,7 +207,6 @@ public abstract class Module : BaseMonobehaviour
     void SetHeading()
     {
         Vector2 desiredDirection = inputManager ? (inputManager.mousePos - (Vector2)transform.position).normalized : Vector2.up;
-        Debug.Log($"[Module] heading to : {ship.heading}");
         Debug.Log($"[Module] desiredDirection : {desiredDirection}");
         float dot = Vector2.Dot(ship.heading, desiredDirection); // 벡터 내적값, 앞뒤 판단(앞 -1..1 뒤)
         float cross = ship.heading.x * desiredDirection.y - ship.heading.y * desiredDirection.x; // 좌우 판단
