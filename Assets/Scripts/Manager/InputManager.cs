@@ -29,6 +29,7 @@ public class InputManager : MonoBehaviour
     public event Action<Collider2D> OnMouseReleaseWithNeutralModule;
     public event Action<Collider2D> OnMouseClickWithPlayerModule;
     public event Action OnMouseClickStartWithVoid, OnMouseClickEndWithVoid;
+    public event Action<Vector2, float> OnMovementStart;
     
 
     void Awake()
@@ -105,5 +106,19 @@ public class InputManager : MonoBehaviour
         }
 
         return hit;
+    }
+
+    public void OnMovement(InputAction.CallbackContext ctx)
+    {
+        Vector3 inputVector = ctx.ReadValue<Vector3>();
+        // x축 = A, D (A가 -1, D가 1)
+        // y축 = W, S (S가 -1, W가 1)
+        // z축 = Q, E (Q가 -1, E가 1)
+        Debug.Log($"[InputManager] inputVector : {inputVector}");
+        // 이 벡터를 전후좌우 Vector2와 회전 Torque로 전환
+        Vector2 movement = new Vector2(inputVector.z, inputVector.y).normalized;
+        float torque = -inputVector.x;
+
+        OnMovementStart?.Invoke(movement, torque);
     }
 }

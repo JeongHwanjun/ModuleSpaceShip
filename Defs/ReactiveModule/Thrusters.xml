@@ -10,7 +10,7 @@
 		<tier>0</tier>
         <reaction></reaction>
         <thruster>
-            <thrust>1.0</thrust>
+            <thrust>10.0</thrust>
         </thruster>
     </Def>
 </Defs>

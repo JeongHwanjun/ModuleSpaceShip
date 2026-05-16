@@ -20,7 +20,10 @@ public class Ship : MonoBehaviour
     private InputManager inputManager;
     private Rigidbody2D rigid;
     private ShipGrid shipGrid;
-    public float torque; // 테스트시 가할 회전힘의 강도
+    private readonly ThrusterCalculator thrusterCalculator = new();
+    private readonly List<Thruster> thrusters = new();
+    private Vector2 currentMoveIntent;
+    private float currentTurnIntent;
     public Collider2D[] moduleColliders; // 함선을 구성하고 있는 module의 collider2d;
 
 
@@ -44,6 +47,7 @@ public class Ship : MonoBehaviour
         inputManager.OnMouseClickWithPlayerModule += OnMouseClickWithPlayerModule;
         inputManager.OnMouseClickStartWithVoid += OnMouseClickStartWithVoid;
         inputManager.OnMouseClickEndWithVoid += OnMouseClickEndWithVoid;
+        inputManager.OnMovementStart += OnMovementStart;
     }
 
     void OnDestroy()
@@ -52,6 +56,7 @@ public class Ship : MonoBehaviour
         inputManager.OnMouseClickWithPlayerModule -= OnMouseClickWithPlayerModule;
         inputManager.OnMouseClickStartWithVoid -= OnMouseClickStartWithVoid;
         inputManager.OnMouseClickEndWithVoid -= OnMouseClickEndWithVoid;
+        inputManager.OnMovementStart -= OnMovementStart;
     }
 
     private void OnMouseReleaseWithModule(Collider2D col)
@@ -122,6 +127,13 @@ public class Ship : MonoBehaviour
         // 함선 파괴
     }
 
+    private void OnMovementStart(Vector2 movement, float torque)
+    {
+        Debug.Log($"[Ship] Received data : {movement}, {torque}");
+        currentMoveIntent = movement;
+        currentTurnIntent = torque;
+    }
+
     private void RefreshShip()
     {
         // 함선 정보 갱신
@@ -139,8 +151,17 @@ public class Ship : MonoBehaviour
                 if (col != null) list.Add(col);
             }
         }
-
         moduleColliders = list.ToArray();
+        
+        // 2. 추진기 정보 갱신
+        thrusters.Clear();
+        GetComponentsInChildren(thrusters);
+        thrusterCalculator.Rebuild(
+            thrusters,
+            rigid.centerOfMass,
+            moveWeight: 1f,
+            turnWeight: 1f
+        );
     }
 
     // ---- 주어진 Grid를 ShipGrid에 전달하여 해당 위치에 존재하는 Module List반환 ----
@@ -162,11 +183,15 @@ public class Ship : MonoBehaviour
         return moduleColliders.ToArray();
     }
 
-    [ContextMenu("Add AngularForce")]
-    void AddAngularForce()
+    void FixedUpdate()
     {
-        if(!rigid) return;
+        if (!rigid) return;
 
-        rigid.AddTorque(torque, ForceMode2D.Impulse);
+        var commands = thrusterCalculator.GetCommands(currentMoveIntent, currentTurnIntent);
+
+        foreach (var command in commands)
+        {
+            command.thruster.Ignite(rigid, command.throttle);
+        }
     }
 }

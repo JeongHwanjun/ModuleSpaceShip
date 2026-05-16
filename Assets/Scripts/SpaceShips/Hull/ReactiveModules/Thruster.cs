@@ -9,6 +9,17 @@ public class Thruster : ColliderReactiveModule
     protected override string DefName => def;
     protected ThrusterThing thrusterThing => (ThrusterThing)colliderReactiveModuleThing;
 
+    public Vector2 localPosition => transform.localPosition;
+
+    public Vector2 localForceDirection
+    {
+        get
+        {
+            // Thruster의 up방향의 *반대방향*으로 힘을 가함.
+            return transform.localRotation * Vector2.down;
+        }
+    }
+
     public override void OnModuleAttached()
     {
         // 추진기는 뭐 없음... collider기반이라
@@ -39,8 +50,13 @@ public class Thruster : ColliderReactiveModule
         Debug.Log($"[ColliderReactiveModule] TriggerExit : {other.name}");
     }
 
-    public void RequstIgnition()
+    public void Ignite(Rigidbody2D shipRigid, float throttle)
     {
-        // ship(또는 추진 담당 객체)에 AddForce 요청
+        if (!shipRigid) return;
+
+        Vector2 worldPosition = transform.position;
+        Vector2 worldForce = -transform.up * thrusterThing.thrust * throttle;
+
+        shipRigid.AddForceAtPosition(worldForce, worldPosition, ForceMode2D.Force);
     }
 }
