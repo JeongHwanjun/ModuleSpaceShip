@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using ModuleSpaceShip.Runtime;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -7,12 +8,23 @@ using UnityEngine;
 public abstract class ReactiveModule : Module
 {
     protected ReactiveModuleThing reactiveModuleThing => (ReactiveModuleThing)moduleThing;
-    protected Collider2D[] targetModules;
+    protected List<Collider2D> targetModuleColliders = new();
+    protected List<Module> targetModules = new();
     public abstract void OnModuleAttached(); // 다른 Module이 도킹됨
     public abstract void OnModuleDetached(); // 다른 Module이 언도킹됨
 
     protected override void Awake()
     {
         base.Awake();
+    }
+
+    protected void GetTargetModulesFromColliders()
+    {
+        if(targetModuleColliders == null) return;
+        targetModules.Clear();
+        foreach(Collider2D targetModuleCollider in targetModuleColliders)
+        {
+            targetModules.Add(targetModuleCollider.GetComponent<Module>());
+        }
     }
 }

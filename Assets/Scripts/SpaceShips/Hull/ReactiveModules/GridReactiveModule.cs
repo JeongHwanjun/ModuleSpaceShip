@@ -1,4 +1,6 @@
+using System.Linq;
 using ModuleSpaceShip.Runtime;
+using UnityEngine;
 public abstract class GridReactiveModule : ReactiveModule
 {
     protected GridReactiveModuleThing gridReactiveModuleThing => (GridReactiveModuleThing)reactiveModuleThing;
@@ -11,6 +13,7 @@ public abstract class GridReactiveModule : ReactiveModule
         // ship 소속이라면 주어진 그리드대로 방문하며 Collider2D 조회
         GridPos[] grids = gridReactiveModuleThing.GetGrid();
         if(grids == null) return;
-        targetModules = ship.GetModulesByGrid(grids);
+        targetModuleColliders = ship.GetModulesByGrid(grids).ToList();
+        GetTargetModulesFromColliders();
     }
 }

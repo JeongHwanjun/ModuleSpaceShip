@@ -1,6 +1,7 @@
 using ModuleSpaceShip.Runtime;
 using UnityEngine;
 using System;
+using System.Collections.Generic;
 
 public class ExplosiveModule : RadiusReactiveModule
 {
@@ -50,15 +51,14 @@ public class ExplosiveModule : RadiusReactiveModule
         DeliverDamageToTargetModules(targetModules);
     }
 
-    private void DeliverDamageToTargetModules(Collider2D[] targetModules)
+    private void DeliverDamageToTargetModules(List<Module> targetModules)
     {
         if(targetModules == null) return;
         // 주어진 TargetModules에 DeliverDamage
-        foreach(Collider2D targetModule in targetModules)
+        foreach(Module targetModule in targetModules)
         {
-            Module module = targetModule.GetComponent<Module>();
-            if(module == null || module == this) continue;
-            module.DeliverDamage(damage);
+            if(targetModule == null || targetModule == this) continue;
+            targetModule.DeliverDamage(damage);
         }
         // 모션, 효과 출력 등 다양한 작용...
     }

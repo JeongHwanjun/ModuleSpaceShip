@@ -32,31 +32,34 @@ public class Thruster : ColliderReactiveModule
 
     protected override void OnTriggerEnter2D(Collider2D other)
     {
-        // 도크 포트는 무시
-        if(other.CompareTag("DockPort")) return;
         // ship 소속이 아니라면 작동할 일이 없으므로 무시
         if(!ship) return;
-        targetModules.Append(other);
-        Debug.Log($"[ColliderReactiveModule] TriggerEnter : {other.name}");
+        base.OnTriggerEnter2D(other);
+
     }
 
     protected override void OnTriggerExit2D(Collider2D other)
     {
-        // 도크 포트는 무시
-        if(other.CompareTag("DockPort")) return;
         // ship 소속이 아니라면 작동할 일이 없으므로 무시
         if(!ship) return;
-        targetModules = targetModules.Where(module => module != other).ToArray();
-        Debug.Log($"[ColliderReactiveModule] TriggerExit : {other.name}");
+        base.OnTriggerExit2D(other);
     }
 
     public void Ignite(Rigidbody2D shipRigid, float throttle)
     {
+        Debug.Log("[Thruster] Ignite!");
         if (!shipRigid) return;
 
         Vector2 worldPosition = transform.position;
         Vector2 worldForce = -transform.up * thrusterThing.thrust * throttle;
 
         shipRigid.AddForceAtPosition(worldForce, worldPosition, ForceMode2D.Force);
+
+        Debug.Log($"[Thruster] targetModule Length : {targetModules.Count}");
+        // 범위내 모듈에 데미지 발생
+        foreach(Module targetModule in targetModules)
+        {
+            targetModule.DeliverDamage(thrusterThing.damage * Time.deltaTime);
+        }
     }
 }

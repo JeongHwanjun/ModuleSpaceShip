@@ -10,12 +10,14 @@ namespace ModuleSpaceShip.Runtime
 
         public float thrust = 0f;
         public float modifiedThrust = 0f;
+        public float damage = 0f;
 
         protected override void OnInitTyped()
         {
             base.OnInitTyped();
             thrust = thrusterDef.thrust;
             modifiedThrust = thrust;
+            damage = thrusterDef.damage;
         }
 
         public void AddThrust(float delta)

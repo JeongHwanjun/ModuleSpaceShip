@@ -11,6 +11,7 @@
         <reaction></reaction>
         <thruster>
             <thrust>10.0</thrust>
+            <damage>10.0</damage>
         </thruster>
     </Def>
 </Defs>

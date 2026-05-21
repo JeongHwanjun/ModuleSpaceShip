@@ -9,6 +9,7 @@ namespace ModuleSpaceShip.Defs
         public override Type thingType => typeof(ThrusterThing);
 
         public float thrust = 0f;
+        public float damage = 0f;
 
         public override void LoadFromXml(XElement e)
         {
@@ -21,7 +22,8 @@ namespace ModuleSpaceShip.Defs
         {
             string thrustString = GetTag(thruster, "thrust", "0");
             if(!float.TryParse(thrustString, out thrust)) throw new Exception($"[ThrusterDef] Invalid value for <thrust> : {thrustString}");
-
+            string damageString = GetTag(thruster, "damage", "0");
+            if(!float.TryParse(damageString, out damage)) throw new Exception($"[ThrusterDef] Invalid value for <damage> : {damageString}");
             // 추후에 소비 전력, 연산 요구치 등도 추가할 예정
         }
     }

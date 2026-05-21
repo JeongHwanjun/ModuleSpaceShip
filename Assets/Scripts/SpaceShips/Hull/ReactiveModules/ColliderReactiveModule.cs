@@ -10,22 +10,24 @@ public abstract class ColliderReactiveModule : ReactiveModule
     protected override void Awake()
     {
         base.Awake();
-        targetModules = new Collider2D[0];
+        targetModuleColliders.Clear();
     }
 
     protected virtual void OnTriggerEnter2D(Collider2D other)
     {
         // 도크 포트는 무시
         if(other.CompareTag("DockPort")) return;
-        targetModules.Append(other);
-        Debug.Log($"[ColliderReactiveModule] TriggerEnter : {other.name}");
+        targetModuleColliders.Add(other);
+        Debug.Log($"[ColliderReactiveModule] TriggerEnter : {other.name}, targetModuleColliders Length : {targetModuleColliders.Count}");
+        GetTargetModulesFromColliders();
     }
 
     protected virtual void OnTriggerExit2D(Collider2D other)
     {
         // 도크 포트는 무시
         if(other.CompareTag("DockPort")) return;
-        targetModules = targetModules.Where(module => module != other).ToArray();
+        targetModuleColliders = targetModuleColliders.Where(collider => collider != other).ToList();
         Debug.Log($"[ColliderReactiveModule] TriggerExit : {other.name}");
+        GetTargetModulesFromColliders();
     }
 }

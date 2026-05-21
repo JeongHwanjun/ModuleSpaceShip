@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using ModuleSpaceShip.Runtime;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -21,7 +22,8 @@ public abstract class RadiusReactiveModule : ReactiveModule
         // 이는 ship 소속이 아니라도 관계 없음
         float radius = radiusReactiveModuleThing.GetRadius();
         // 물리적 거리를 활용해 탐색
-        targetModules = Physics2D.OverlapCircleAll(transform.position, radius);
+        targetModuleColliders = Physics2D.OverlapCircleAll(transform.position, radius).ToList();
+        GetTargetModulesFromColliders();
     }
 
     [ContextMenu("Toggle Radius Visibility")]
