@@ -1,6 +1,7 @@
 using UnityEngine;
 using ModuleSpaceShip.Runtime;
 using System.Linq;
+using Unity.VisualScripting;
 
 public class Thruster : ColliderReactiveModule
 {
@@ -8,9 +9,7 @@ public class Thruster : ColliderReactiveModule
     [SerializeField] private string def;
     protected override string DefName => def;
     protected ThrusterThing thrusterThing => (ThrusterThing)colliderReactiveModuleThing;
-
     public Vector2 localPosition => transform.localPosition;
-
     public Vector2 localForceDirection
     {
         get
@@ -19,6 +18,8 @@ public class Thruster : ColliderReactiveModule
             return transform.localRotation * Vector2.down;
         }
     }
+    [SerializeField] private GameObject thrusterFlame;
+    private bool isFlameActive = false;
 
     public override void OnModuleAttached()
     {
@@ -47,19 +48,37 @@ public class Thruster : ColliderReactiveModule
 
     public void Ignite(Rigidbody2D shipRigid, float throttle)
     {
-        Debug.Log("[Thruster] Ignite!");
+        Debug.Log($"[Thruster] {name} : Ignite!");
         if (!shipRigid) return;
+
+        if(targetDirty) RefreshTargetsByOverlap();
 
         Vector2 worldPosition = transform.position;
         Vector2 worldForce = -transform.up * thrusterThing.thrust * throttle;
 
         shipRigid.AddForceAtPosition(worldForce, worldPosition, ForceMode2D.Force);
 
-        Debug.Log($"[Thruster] targetModule Length : {targetModules.Count}");
+
         // 범위내 모듈에 데미지 발생
         foreach(Module targetModule in targetModules)
         {
+            if (!targetModule)
+            {
+                // 대상 모듈이 이미 파괴된 상태
+                MarkTargetsDirty();
+                continue;
+            }
             targetModule.DeliverDamage(thrusterThing.damage * Time.deltaTime);
         }
+    }
+
+    public void SetThrusterFlameVisibility(float throttle)
+    {
+        bool active = throttle > 0f;
+
+        if(isFlameActive == active) return;
+
+        if(thrusterFlame) thrusterFlame.SetActive(active);
+        isFlameActive = active;
     }
 }

@@ -117,7 +117,7 @@ public class Ship : MonoBehaviour
         Debug.Log($"[Ship] COM : {rigid.centerOfMass}");
 
         // ShipGrid에 모듈 분리 작업 지시
-        OnTryUndock?.Invoke(oldModule.gameObject.GetComponent<Collider2D>());
+        //OnTryUndock?.Invoke(oldModule.gameObject.GetComponent<Collider2D>());
 
         RefreshShip();
     }
@@ -156,6 +156,7 @@ public class Ship : MonoBehaviour
         // 2. 추진기 정보 갱신
         thrusters.Clear();
         GetComponentsInChildren(thrusters);
+        foreach(Thruster thruster in thrusters) thruster.MarkTargetsDirty(); // 목표 모듈 최신화 필요성 표시
         thrusterCalculator.Rebuild(
             thrusters,
             rigid.centerOfMass,
@@ -189,9 +190,14 @@ public class Ship : MonoBehaviour
 
         var commands = thrusterCalculator.GetCommands(currentMoveIntent, currentTurnIntent);
 
+        foreach(Thruster t in thrusters)
+        {
+            t.SetThrusterFlameVisibility(0f);
+        }
         foreach (var command in commands)
         {
             command.thruster.Ignite(rigid, command.throttle);
+            command.thruster.SetThrusterFlameVisibility(command.throttle);
         }
     }
 }

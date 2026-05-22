@@ -24,7 +24,9 @@ public abstract class ReactiveModule : Module
         targetModules.Clear();
         foreach(Collider2D targetModuleCollider in targetModuleColliders)
         {
-            targetModules.Add(targetModuleCollider.GetComponent<Module>());
+            Module targetModule = targetModuleCollider.GetComponent<Module>();
+            if(!targetModule || targetModule == this) continue;
+            targetModules.Add(targetModule);
         }
     }
 }

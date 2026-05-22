@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4440987727784786963}
   - component: {fileID: 9110201104838291081}
   - component: {fileID: 7636431996265070688}
-  - component: {fileID: 4037591617874452914}
+  - component: {fileID: 5416159094061844337}
   - component: {fileID: 5604361773302601535}
   m_Layer: 6
   m_Name: Thruster
@@ -170,7 +170,7 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!61 &4037591617874452914
+--- !u!61 &5416159094061844337
 BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -234,7 +234,10 @@ MonoBehaviour:
   GrabMaxSpeed: 30
   GrabArriveRadius: 3
   GrabAccel: 60
+  overlapBoxLocalCenter: {x: 0, y: 1}
+  overlapBoxSize: {x: 1, y: 1}
   def: ThrusterModule
+  thrusterFlame: {fileID: 2885909118262153601}
 --- !u!1 &2885909118262153601
 GameObject:
   m_ObjectHideFlags: 0
@@ -244,14 +247,14 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4224735629330600695}
-  - component: {fileID: 8368372734634425045}
+  - component: {fileID: 688722052855821151}
   m_Layer: 6
-  m_Name: ReactiveCollider
+  m_Name: Flame
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4224735629330600695
 Transform:
   m_ObjectHideFlags: 0
@@ -267,7 +270,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 7133823689107831477}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!212 &8368372734634425045
+--- !u!212 &688722052855821151
 SpriteRenderer:
   serializedVersion: 2
   m_ObjectHideFlags: 0
@@ -317,7 +320,7 @@ SpriteRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 48e93eef0688c4a259cb0eddcd8661f7, type: 3}
-  m_Color: {r: 0.83022124, g: 0.9811321, b: 0.5322179, a: 0.13333334}
+  m_Color: {r: 0.5518868, g: 1, b: 0.756978, a: 0.23529412}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -366,7 +369,7 @@ SpriteRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7573725331567558201}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 0
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ModuleSpaceShip.Defs;
 using ModuleSpaceShip.Runtime;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -151,9 +152,11 @@ public abstract class Module : BaseMonobehaviour
     public virtual void OnDetached(bool isChained)
     {
         // 함선에서 떨어져나갈 때 실행(아직 마우스로 잡고있는 상태)
-        // 0. 부모 해제 및 태그 갱신
-        transform.SetParent(null);
-        gameObject.tag = TagHandle.GetExistingTag("NeutralModule").ToString();
+        if(!ship) ship = GetComponentInParent<Ship>(); // ship 획득
+        if (!ship)
+        {
+            Debug.LogError($"[Module] {name} : Invalid Detachment - 'ship' is NULL");
+        }
         // 1. 입력 이벤트 구독해제
         // 2. Thing 상태 갱신
         moduleThing.state = isChained ? ModuleThing.State.Floating : ModuleThing.State.Grabbed;
@@ -165,7 +168,12 @@ public abstract class Module : BaseMonobehaviour
         // 파괴되는 중이라면 rigid가 없을 수 있음.
         if(rigid) rigid.AddForce(detachForce * DetachForceScale, ForceMode2D.Impulse);
         // 4. 만약 모듈이라면 자신의 상태에 맞게 코드를 변형함...
+        ship.OnModuleDetached(this);
         ship = null;
+
+        // 5. 부모 해제 및 태그 갱신
+        transform.SetParent(null);
+        gameObject.tag = TagHandle.GetExistingTag("NeutralModule").ToString();
     }
 
     void InitializeRigidbody(Rigidbody2D rb)
