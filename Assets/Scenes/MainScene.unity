@@ -305,7 +305,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::InputManager
   ClickOrders:
   - serializedVersion: 2
-    m_Bits: 64
+    m_Bits: 1088
   - serializedVersion: 2
     m_Bits: 2147483648
 --- !u!4 &182665275

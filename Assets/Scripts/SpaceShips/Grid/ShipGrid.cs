@@ -102,18 +102,18 @@ public class ShipGrid : MonoBehaviour
     }
 
     // ---- 도킹 이벤트 대응 ----
-    private void OnTryDockAtPort(Collider2D newModule)
+    private void OnTryDockAtPort(GameObject newModule, Collider2D newModuleHitbox)
     {
-        DockingPort targetPort = dockReceiver.PickBestPort(newModule);
+        DockingPort targetPort = dockReceiver.PickBestPort(newModuleHitbox);
         if(targetPort == null)
         {
             Debug.LogWarning($"[ShipGrid] Can't find proper port for : {newModule.name}");
             return;
         }
-        TryDockModuleAtPort(targetPort.mountingPoint, newModule.gameObject);
+        TryDockModuleAtPort(targetPort.mountingPoint, newModule);
 
         // 도킹 후 Module에 대한 후보 port를 제거함
-        dockReceiver.ClearPorts(newModule);
+        dockReceiver.ClearPorts(newModuleHitbox);
     }
 
     // ---- 도킹: 특정 포트 위치에 새 Module 결합 ----
@@ -143,14 +143,15 @@ public class ShipGrid : MonoBehaviour
     }
 
     // ---- 언도킹 이벤트 대응 ----
-    private void OnTryUndock(Collider2D oldModule)
+    private void OnTryUndock(GameObject oldModule, Collider2D oldModuleHitbox)
     {
         if (!oldModule)
         {
             Debug.LogError($"[ShipGrid] Null collider received while Undocking");
             return;
         }
-        Transform targetModule = oldModule.gameObject.transform;
+        Debug.Log($"[ShipGrid] OnTryUndock");
+        Transform targetModule = oldModule.transform;
         GridPos targetGridPos = new GridPos(Mathf.RoundToInt(targetModule.localPosition.x), Mathf.RoundToInt(targetModule.localPosition.y));
         TryUndockModule(targetGridPos);
     }

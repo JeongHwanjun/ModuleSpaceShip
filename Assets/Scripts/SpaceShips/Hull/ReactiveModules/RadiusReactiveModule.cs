@@ -22,7 +22,7 @@ public abstract class RadiusReactiveModule : ReactiveModule
         // 이는 ship 소속이 아니라도 관계 없음
         float radius = radiusReactiveModuleThing.GetRadius();
         // 물리적 거리를 활용해 탐색
-        targetModuleColliders = Physics2D.OverlapCircleAll(transform.position, radius).ToList();
+        targetModuleColliders = Physics2D.OverlapCircleAll(transform.position, radius, targetLayers).ToList();
         GetTargetModulesFromColliders();
     }
 

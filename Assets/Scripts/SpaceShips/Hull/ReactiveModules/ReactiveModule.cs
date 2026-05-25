@@ -10,6 +10,7 @@ public abstract class ReactiveModule : Module
     protected ReactiveModuleThing reactiveModuleThing => (ReactiveModuleThing)moduleThing;
     protected List<Collider2D> targetModuleColliders = new();
     protected List<Module> targetModules = new();
+    [SerializeField] protected LayerMask targetLayers;
     public abstract void OnModuleAttached(); // 다른 Module이 도킹됨
     public abstract void OnModuleDetached(); // 다른 Module이 언도킹됨
 
@@ -24,7 +25,7 @@ public abstract class ReactiveModule : Module
         targetModules.Clear();
         foreach(Collider2D targetModuleCollider in targetModuleColliders)
         {
-            Module targetModule = targetModuleCollider.GetComponent<Module>();
+            Module targetModule = targetModuleCollider.GetComponentInParent<Module>();
             if(!targetModule || targetModule == this) continue;
             targetModules.Add(targetModule);
         }

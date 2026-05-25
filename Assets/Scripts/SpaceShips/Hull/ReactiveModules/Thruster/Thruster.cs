@@ -36,7 +36,11 @@ public class Thruster : ColliderReactiveModule
         // ship 소속이 아니라면 작동할 일이 없으므로 무시
         if(!ship) return;
         base.OnTriggerEnter2D(other);
+    }
 
+    public void OnFlameEnter(Collider2D other)
+    {
+        OnTriggerEnter2D(other);
     }
 
     protected override void OnTriggerExit2D(Collider2D other)
@@ -46,19 +50,25 @@ public class Thruster : ColliderReactiveModule
         base.OnTriggerExit2D(other);
     }
 
+    public void OnFlameExit(Collider2D other)
+    {
+        OnTriggerExit2D(other);
+    }
+
     public void Ignite(Rigidbody2D shipRigid, float throttle)
     {
         Debug.Log($"[Thruster] {name} : Ignite!");
         if (!shipRigid) return;
 
         if(targetDirty) RefreshTargetsByOverlap();
+        RefreshTargetsByOverlap();
 
         Vector2 worldPosition = transform.position;
         Vector2 worldForce = -transform.up * thrusterThing.thrust * throttle;
 
         shipRigid.AddForceAtPosition(worldForce, worldPosition, ForceMode2D.Force);
 
-
+        Debug.Log($"[Thruster] targetModules.Count : {targetModules.Count}");
         // 범위내 모듈에 데미지 발생
         foreach(Module targetModule in targetModules)
         {

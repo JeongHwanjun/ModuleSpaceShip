@@ -9,8 +9,7 @@ public abstract class ColliderReactiveModule : ReactiveModule
 
     //[SerializeField] protected Collider2D reactiveTriggerCollider;
     protected bool targetDirty = true;
-    [SerializeField] private Vector2 overlapBoxLocalCenter = Vector2.up;
-    [SerializeField] private Vector2 overlapBoxSize = Vector2.one;
+    [SerializeField] private Vector2 overlapBoxSize = Vector2.one * 0.2f;
 
 
     protected override void Awake()
@@ -41,10 +40,7 @@ public abstract class ColliderReactiveModule : ReactiveModule
     {
         if (other.CompareTag("DockPort")) return;
         if (ship == null) return;
-        
-
-        if (!targetModuleColliders.Contains(other))
-            targetModuleColliders.Add(other);
+        Debug.Log($"[ColliderReactiveModule] TriggerEnter : {other.name}");
 
         RefreshTargetsByOverlap();
         MarkTargetsDirty();
@@ -53,8 +49,8 @@ public abstract class ColliderReactiveModule : ReactiveModule
     protected virtual void OnTriggerExit2D(Collider2D other)
     {
         if (other.CompareTag("DockPort")) return;
+        Debug.Log($"[ColliderReactiveModule] TriggerExit : {other.name}");
 
-        targetModuleColliders.Remove(other);
         RefreshTargetsByOverlap();
         MarkTargetsDirty();
     }
@@ -68,8 +64,7 @@ public abstract class ColliderReactiveModule : ReactiveModule
     {
         Debug.Log($"[ColliderReactiveModules] RefreshTargetsByOverlap");
         targetModuleColliders.Clear();
-
-        targetModuleColliders = Physics2D.OverlapBoxAll(transform.TransformPoint(Vector3.up), Vector2.one, transform.eulerAngles.z).ToList(); // 사이즈를 def에서 가져와야 할듯;;
+        targetModuleColliders = Physics2D.OverlapBoxAll(transform.TransformPoint(Vector3.up), overlapBoxSize, transform.eulerAngles.z, targetLayers).ToList(); // 사이즈를 def에서 가져와야 할듯;;
         Debug.Log($"[ColliderReactiveModule] {name} : OverlapBox position : {transform.position + Vector3.up}");
         GetTargetModulesFromColliders();
 

@@ -26,8 +26,8 @@ public class InputManager : MonoBehaviour
     private GameObject grabbedModule;
 
     // ----Events----
-    public event Action<Collider2D> OnMouseReleaseWithNeutralModule;
-    public event Action<Collider2D> OnMouseClickWithPlayerModule;
+    public event Action<GameObject, Collider2D> OnMouseReleaseWithNeutralModule;
+    public event Action<GameObject, Collider2D> OnMouseClickWithPlayerModule;
     public event Action OnMouseClickStartWithVoid, OnMouseClickEndWithVoid;
     public event Action<Vector2, float> OnMovementStart;
     
@@ -59,18 +59,18 @@ public class InputManager : MonoBehaviour
 
         if(ctx.phase == InputActionPhase.Started) // 클릭 시작
         {
-            Debug.Log($"[InputManager] Hit started : {hit?.transform.name}");
-            if (hit != null && hit.CompareTag("PlayerShip") && grabbedModule == null) // 선체 분리를 시도할 경우
+            Debug.Log($"[InputManager] Hit started : {hit?.transform.parent.name}");
+            if (hit != null && hit.transform.parent.CompareTag("PlayerShip") && grabbedModule == null) // 선체 분리를 시도할 경우
             {
                 //Debug.LogWarning($"[InputManager] hit : {hit}");
-                OnMouseClickWithPlayerModule?.Invoke(hit); // 선체 분리 시도 이벤트 발생
+                OnMouseClickWithPlayerModule?.Invoke(hit.transform.parent.gameObject, hit); // 선체 분리 시도 이벤트 발생
                 grabbedModule = hit.gameObject;
-                grabbedModule.GetComponent<BaseMonobehaviour>()?.OnClickStart();
+                grabbedModule.GetComponentInParent<BaseMonobehaviour>()?.OnClickStart();
             }
             else if(hit != null) // 중립 선체에서 클릭 시작한 경우
             {
                 grabbedModule = hit.gameObject;
-                grabbedModule.GetComponent<BaseMonobehaviour>()?.OnClickStart();
+                grabbedModule.GetComponentInParent<BaseMonobehaviour>()?.OnClickStart();
             }
             else // 빈공간에서 클릭 시작한경우
             {
@@ -80,13 +80,13 @@ public class InputManager : MonoBehaviour
         }
         else if(ctx.phase == InputActionPhase.Canceled)
         {
-            Debug.Log($"[InputManager] Hit canceled : {hit?.transform.name}");
+            Debug.Log($"[InputManager] Hit canceled : {hit?.transform.parent.name}");
             if(grabbedModule != null) // 선체를 잡고있는 상태엿다면 선체를 놓는 상호작용
             {
                 Collider2D ModuleCol = grabbedModule.GetComponent<Collider2D>();
                 if(!ModuleCol) Debug.LogError($"[InputManager] Can't find collider : {grabbedModule.name}");
-                OnMouseReleaseWithNeutralModule?.Invoke(ModuleCol);
-                grabbedModule.GetComponent<BaseMonobehaviour>()?.OnClickCancel(hit);
+                OnMouseReleaseWithNeutralModule?.Invoke(grabbedModule.transform.parent.gameObject, ModuleCol);
+                grabbedModule.GetComponentInParent<BaseMonobehaviour>()?.OnClickCancel(hit);
                 grabbedModule = null;
             }
             else // 아무것도 안잡고 있었다면 해당 이벤트 발생

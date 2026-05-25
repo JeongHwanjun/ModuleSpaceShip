@@ -28,8 +28,8 @@ public class Ship : MonoBehaviour
 
 
     // ---- Events ----
-    public event Action<Collider2D> OnTryDockAtPort;
-    public event Action<Collider2D> OnTryUndock;
+    public event Action<GameObject, Collider2D> OnTryDockAtPort;
+    public event Action<GameObject, Collider2D> OnTryUndock;
     public event Action OnTryFireStart;
     public event Action OnTryFireStop;
 
@@ -59,13 +59,13 @@ public class Ship : MonoBehaviour
         inputManager.OnMovementStart -= OnMovementStart;
     }
 
-    private void OnMouseReleaseWithModule(Collider2D col)
+    private void OnMouseReleaseWithModule(GameObject module, Collider2D col)
     {
-        OnTryDockAtPort?.Invoke(col);
+        OnTryDockAtPort?.Invoke(module, col);
     }
-    private void OnMouseClickWithPlayerModule(Collider2D col)
+    private void OnMouseClickWithPlayerModule(GameObject oldModule, Collider2D col)
     {
-        OnTryUndock?.Invoke(col);
+        OnTryUndock?.Invoke(oldModule, col);
     }
     private void OnMouseClickStartWithVoid()
     {

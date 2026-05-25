@@ -16,7 +16,7 @@ public abstract class Module : BaseMonobehaviour
     protected ModuleThing moduleThing;
     private Rigidbody2D rigid;
     protected Ship ship; // 부착된 함선 스크립트
-    private Collider2D col;
+    [SerializeField] private Collider2D col;
 
     /* 적용 효과들 */
     private List<EffectBase> effects;
@@ -51,7 +51,6 @@ public abstract class Module : BaseMonobehaviour
             Init(ThingFactory.CreateFromDefName(DefName));
         }
         rigid = GetComponent<Rigidbody2D>();
-        col = GetComponent<Collider2D>();
     }
     protected virtual void Start()
     {
@@ -101,6 +100,11 @@ public abstract class Module : BaseMonobehaviour
         moduleThing.state = ModuleThing.State.Grabbed;
         gameObject.layer = LayerMask.NameToLayer("GrabbedModule");
         // 질량 변경
+        if(!rigid)
+        {
+            rigid = gameObject.AddComponent<Rigidbody2D>();
+            InitializeRigidbody(rigid);
+        }
         rigid.mass = 0.0001f;
         Debug.Log($"[Module] moduleThing.State : {moduleThing.state}");
     }
