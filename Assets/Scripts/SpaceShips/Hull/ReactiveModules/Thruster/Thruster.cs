@@ -61,7 +61,7 @@ public class Thruster : ColliderReactiveModule
         if (!shipRigid) return;
 
         if(targetDirty) RefreshTargetsByOverlap();
-        RefreshTargetsByOverlap();
+        //RefreshTargetsByOverlap();
 
         Vector2 worldPosition = transform.position;
         Vector2 worldForce = -transform.up * thrusterThing.thrust * throttle;

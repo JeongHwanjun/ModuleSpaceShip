@@ -14,7 +14,7 @@ public class ThrusterFlame : MonoBehaviour
         thruster.OnFlameEnter(collision);
     }
 
-    void OD(Collider2D collision)
+    void OnTriggerExit2D(Collider2D collision)
     {
         thruster.OnFlameExit(collision);
     }

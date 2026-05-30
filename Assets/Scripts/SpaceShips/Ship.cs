@@ -5,7 +5,7 @@ using ModuleSpaceShip.Runtime;
 using UnityEngine;
 
 // 함선 그 자체를 뜻하는 클래스
-public class Ship : MonoBehaviour
+public abstract class Ship : MonoBehaviour
 {
     [DefName("ShipDef")]
     [SerializeField] private string def;
@@ -17,7 +17,6 @@ public class Ship : MonoBehaviour
             return (Vector2)transform.up;
         }
     }
-    private InputManager inputManager;
     private Rigidbody2D rigid;
     private ShipGrid shipGrid;
     private readonly ThrusterCalculator thrusterCalculator = new();
@@ -40,38 +39,19 @@ public class Ship : MonoBehaviour
         shipGrid = GetComponentInChildren<ShipGrid>();
     }
 
-    void Start()
-    {
-        inputManager = InputManager.Instance;
-        inputManager.OnMouseReleaseWithNeutralModule += OnMouseReleaseWithModule;
-        inputManager.OnMouseClickWithPlayerModule += OnMouseClickWithPlayerModule;
-        inputManager.OnMouseClickStartWithVoid += OnMouseClickStartWithVoid;
-        inputManager.OnMouseClickEndWithVoid += OnMouseClickEndWithVoid;
-        inputManager.OnMovementStart += OnMovementStart;
-    }
-
-    void OnDestroy()
-    {
-        inputManager.OnMouseReleaseWithNeutralModule -= OnMouseReleaseWithModule;
-        inputManager.OnMouseClickWithPlayerModule -= OnMouseClickWithPlayerModule;
-        inputManager.OnMouseClickStartWithVoid -= OnMouseClickStartWithVoid;
-        inputManager.OnMouseClickEndWithVoid -= OnMouseClickEndWithVoid;
-        inputManager.OnMovementStart -= OnMovementStart;
-    }
-
-    private void OnMouseReleaseWithModule(GameObject module, Collider2D col)
+    protected void OnMouseReleaseWithModule(GameObject module, Collider2D col)
     {
         OnTryDockAtPort?.Invoke(module, col);
     }
-    private void OnMouseClickWithPlayerModule(GameObject oldModule, Collider2D col)
+    protected void OnMouseClickWithPlayerModule(GameObject oldModule, Collider2D col)
     {
         OnTryUndock?.Invoke(oldModule, col);
     }
-    private void OnMouseClickStartWithVoid()
+    protected void OnMouseClickStartWithVoid()
     {
         OnTryFireStart?.Invoke();
     }
-    private void OnMouseClickEndWithVoid()
+    protected void OnMouseClickEndWithVoid()
     {
         OnTryFireStop?.Invoke();
     }
@@ -122,12 +102,12 @@ public class Ship : MonoBehaviour
         RefreshShip();
     }
 
-    private void OnShipDestroyed()
+    protected void OnShipDestroyed()
     {
         // 함선 파괴
     }
 
-    private void OnMovementStart(Vector2 movement, float torque)
+    protected void OnMovementStart(Vector2 movement, float torque)
     {
         Debug.Log($"[Ship] Received data : {movement}, {torque}");
         currentMoveIntent = movement;
