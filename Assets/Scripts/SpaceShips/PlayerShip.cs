@@ -1,7 +1,8 @@
+using UnityEngine;
+
 public class PlayerShip : Ship
 {
     private InputManager inputManager;
-
     void Start()
     {
         inputManager = InputManager.Instance;

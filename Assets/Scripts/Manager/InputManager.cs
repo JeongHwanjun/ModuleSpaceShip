@@ -22,6 +22,8 @@ public class InputManager : MonoBehaviour
     {
         get => _mousePos;
     }
+    private Vector2 _mousePosScreen;
+    public Vector2 mousePosScreen => _mousePosScreen;
 
     private GameObject grabbedModule;
 
@@ -30,6 +32,7 @@ public class InputManager : MonoBehaviour
     public event Action<GameObject, Collider2D> OnMouseClickWithPlayerModule;
     public event Action OnMouseClickStartWithVoid, OnMouseClickEndWithVoid;
     public event Action<Vector2, float> OnMovementStart;
+    public event Action OnCameraToggleStart;
     
 
     void Awake()
@@ -49,6 +52,7 @@ public class InputManager : MonoBehaviour
         Vector2 pos = ctx.ReadValue<Vector2>();
         Vector2 target = cam.ScreenToWorldPoint(pos);
 
+        _mousePosScreen = pos;
         _mousePos = target;
     }
 
@@ -120,5 +124,10 @@ public class InputManager : MonoBehaviour
         float torque = -inputVector.x;
 
         OnMovementStart?.Invoke(movement, torque);
+    }
+
+    public void OnCameraToggle(InputAction.CallbackContext ctx)
+    {
+        if(ctx.phase == InputActionPhase.Started) OnCameraToggleStart?.Invoke();
     }
 }

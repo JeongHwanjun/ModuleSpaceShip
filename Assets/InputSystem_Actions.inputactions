@@ -1022,6 +1022,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "CameraToggle",
+                    "type": "Button",
+                    "id": "c9848e4c-d851-4f80-9c70-bb608c44c4cc",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -1123,6 +1132,17 @@
                     "action": "ShipMovement",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "598f21ff-7106-4571-abe3-6a779c3568f2",
+                    "path": "<Keyboard>/leftShift",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CameraToggle",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         }
