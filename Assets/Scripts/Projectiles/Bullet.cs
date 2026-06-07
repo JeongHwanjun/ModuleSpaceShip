@@ -49,7 +49,7 @@ public class Bullet : MonoBehaviour
     void OnCollisionEnter2D(Collision2D collision)
     {
         Debug.Log($"[Bullet] Collision With : {collision.collider}");
-        Module other = collision.collider.GetComponent<Module>();
+        Module other = collision.collider.GetComponentInParent<Module>();
         if(other == null) return;
         other.DeliverDamage(bulletThing.damage);
 

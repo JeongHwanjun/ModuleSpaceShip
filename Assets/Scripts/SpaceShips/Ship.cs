@@ -125,7 +125,7 @@ public abstract class Ship : MonoBehaviour
         {
             if (module == null) continue;
 
-            var cols = module.GetComponents<Collider2D>();
+            var cols = module.GetComponentsInChildren<Collider2D>();
             foreach (var col in cols)
             {
                 if (col != null) list.Add(col);
@@ -150,7 +150,7 @@ public abstract class Ship : MonoBehaviour
     {
         if(!shipGrid) return null;
 
-        List<Collider2D> moduleColliders = new();
+        List<Collider2D> gridColliders = new();
         foreach(GridPos grid in requestGrid)
         {
             if(!shipGrid.HasModule(grid)) continue;
@@ -158,10 +158,10 @@ public abstract class Ship : MonoBehaviour
             GameObject targetModule = shipGrid.GetModuleByGridPos(grid);
             if(!targetModule) continue;
 
-            moduleColliders.Add(targetModule.GetComponent<Collider2D>());
+            gridColliders.Add(targetModule.GetComponent<Collider2D>());
         }
         
-        return moduleColliders.ToArray();
+        return gridColliders.ToArray();
     }
 
     void FixedUpdate()

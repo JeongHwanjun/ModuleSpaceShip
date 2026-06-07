@@ -203,7 +203,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 8190388090500043651}
         m_TargetAssemblyTypeName: InputManager, Assembly-CSharp
-        m_MethodName: OnCameraToggle
+        m_MethodName: OnModeToggle
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

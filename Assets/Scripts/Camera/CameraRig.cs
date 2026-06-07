@@ -23,7 +23,7 @@ public class PlayerCameraRig : MonoBehaviour
     private Vector3 offsetVelocity;
 
     private Vector3 currentMouseOffset;
-    private bool isCameraFollowingMouse = true;
+    private bool isCameraFollowingMouse = false;
 
 
     private void Start()
@@ -40,12 +40,14 @@ public class PlayerCameraRig : MonoBehaviour
             target = GameObject.Find("PlayerShip").transform;
         }
 
-        inputManager.OnCameraToggleStart += OnCameraToggleStart;
+        inputManager.OnModeToggleStart += OnModeToggleStart;
+        inputManager.OnModeToggleCanceled += OnModeToggleCanceled;
     }
 
     private void OnDestroy()
     {
-        inputManager.OnCameraToggleStart -= OnCameraToggleStart;
+        inputManager.OnModeToggleStart -= OnModeToggleStart;
+        inputManager.OnModeToggleCanceled -= OnModeToggleCanceled;
     }
 
     private void LateUpdate()
@@ -122,9 +124,14 @@ public class PlayerCameraRig : MonoBehaviour
         playerCamera.transform.localPosition = new Vector3(0, 0, -10f);
     }
 
-    void OnCameraToggleStart()
+    void OnModeToggleStart()
     {
-        if(isCameraFollowingMouse) StopCamera();
-        isCameraFollowingMouse = !isCameraFollowingMouse;
+        isCameraFollowingMouse = true;
+    }
+
+    void OnModeToggleCanceled()
+    {
+        StopCamera();
+        isCameraFollowingMouse = false;
     }
 }

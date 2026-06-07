@@ -26,13 +26,14 @@ public class InputManager : MonoBehaviour
     public Vector2 mousePosScreen => _mousePosScreen;
 
     private GameObject grabbedModule;
+    private bool isFollowingMouse = false;
 
     // ----Events----
     public event Action<GameObject, Collider2D> OnMouseReleaseWithNeutralModule;
     public event Action<GameObject, Collider2D> OnMouseClickWithPlayerModule;
     public event Action OnMouseClickStartWithVoid, OnMouseClickEndWithVoid;
     public event Action<Vector2, float> OnMovementStart;
-    public event Action OnCameraToggleStart;
+    public event Action OnModeToggleStart, OnModeToggleCanceled;
     
 
     void Awake()
@@ -63,6 +64,12 @@ public class InputManager : MonoBehaviour
 
         if(ctx.phase == InputActionPhase.Started) // 클릭 시작
         {
+            if (isFollowingMouse)
+            {
+                OnMouseClickStartWithVoid?.Invoke(); // 사격 시도
+                Debug.Log("[InputManager] Firing Start!");
+                return;
+            }
             Debug.Log($"[InputManager] Hit started : {hit?.transform.parent.name}");
             if (hit != null && hit.transform.parent.CompareTag("PlayerShip") && grabbedModule == null) // 선체 분리를 시도할 경우
             {
@@ -126,8 +133,17 @@ public class InputManager : MonoBehaviour
         OnMovementStart?.Invoke(movement, torque);
     }
 
-    public void OnCameraToggle(InputAction.CallbackContext ctx)
+    public void OnModeToggle(InputAction.CallbackContext ctx)
     {
-        if(ctx.phase == InputActionPhase.Started) OnCameraToggleStart?.Invoke();
+        if(ctx.phase == InputActionPhase.Started) 
+        {
+            isFollowingMouse = true;
+            OnModeToggleStart?.Invoke();
+        }
+        else if(ctx.phase == InputActionPhase.Canceled)
+        {
+            isFollowingMouse = false;
+            OnModeToggleCanceled?.Invoke();
+        }
     }
 }
