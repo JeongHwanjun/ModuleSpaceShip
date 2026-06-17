@@ -34,6 +34,8 @@ public class InputManager : MonoBehaviour
     public event Action OnMouseClickStartWithVoid, OnMouseClickEndWithVoid;
     public event Action<Vector2, float> OnMovementStart;
     public event Action OnModeToggleStart, OnModeToggleCanceled;
+
+    public event Action<float> OnMouseWheelStart;
     
 
     void Awake()
@@ -145,5 +147,13 @@ public class InputManager : MonoBehaviour
             isFollowingMouse = false;
             OnModeToggleCanceled?.Invoke();
         }
+    }
+
+    public void OnMouseWheel(InputAction.CallbackContext ctx)
+    {
+        if(ctx.phase == InputActionPhase.Performed) return; // 한 칸 움직일 때 한번만 인식
+        float value = ctx.ReadValue<float>();
+        Debug.Log($"[InputManager] MouseWheel : {ctx.ReadValue<float>()}, {ctx.phase}");
+        OnMouseWheelStart?.Invoke(value);
     }
 }

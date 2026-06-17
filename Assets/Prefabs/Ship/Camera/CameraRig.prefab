@@ -188,4 +188,7 @@ MonoBehaviour:
   viewportModuleSize: 10
   maxCameraOffset: 3
   offsetSmoothTime: 0.15
+  orthographicSizePerScroll: 1
+  minScrollValue: 1
+  maxScrollValue: 10
   followSmoothTime: 0.1

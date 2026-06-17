@@ -215,6 +215,22 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: c9848e4c-d851-4f80-9c70-bb608c44c4cc
     m_ActionName: 'SpaceShip/CameraToggle[/Keyboard/leftShift]'
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8190388090500043651}
+        m_TargetAssemblyTypeName: InputManager, Assembly-CSharp
+        m_MethodName: OnMouseWheel
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 04c36a08-aa15-4fe0-8367-85256f5425c2
+    m_ActionName: 'SpaceShip/MouseWheel[/Mouse/scroll/down,/Mouse/scroll/up]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: SpaceShip

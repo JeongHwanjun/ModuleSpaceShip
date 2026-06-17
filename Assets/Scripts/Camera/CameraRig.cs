@@ -11,8 +11,15 @@ public class PlayerCameraRig : MonoBehaviour
 
     [Header("Mouse Look Offset")]
     [SerializeField] private float viewportModuleSize = 10f;
+    private float viewportModuleSizeInUse;
     [SerializeField] private float maxCameraOffset = 3f;
+    private float maxCameraOffsetInUse;
     [SerializeField] private float offsetSmoothTime = 0.15f;
+    [SerializeField] private float orthographicSizePerScroll = 1f;
+    [SerializeField] private float minScrollValue = 1f;
+    [SerializeField] private float maxScrollValue = 10f;
+    private float scrollValue = 1f;
+    private float originalOrthographicSize;
 
     [Header("Follow")]
     [SerializeField] private float followSmoothTime = 0.1f;
@@ -40,14 +47,20 @@ public class PlayerCameraRig : MonoBehaviour
             target = GameObject.Find("PlayerShip").transform;
         }
 
+        viewportModuleSizeInUse = viewportModuleSize;
+        maxCameraOffsetInUse = maxCameraOffset;
+        originalOrthographicSize = playerCamera.orthographicSize;
+
         inputManager.OnModeToggleStart += OnModeToggleStart;
         inputManager.OnModeToggleCanceled += OnModeToggleCanceled;
+        inputManager.OnMouseWheelStart += OnMouseWheelStart;
     }
 
     private void OnDestroy()
     {
         inputManager.OnModeToggleStart -= OnModeToggleStart;
         inputManager.OnModeToggleCanceled -= OnModeToggleCanceled;
+        inputManager.OnMouseWheelStart -= OnMouseWheelStart;
     }
 
     private void LateUpdate()
@@ -83,8 +96,8 @@ public class PlayerCameraRig : MonoBehaviour
         float cameraWidth = playerCamera.pixelWidth;
         float cameraHeight = playerCamera.pixelHeight;
 
-        float pixelWidthPerModuleSize = cameraWidth / viewportModuleSize;
-        float pixelHeightPerModuleSize = cameraHeight / viewportModuleSize;
+        float pixelWidthPerModuleSize = cameraWidth / viewportModuleSizeInUse;
+        float pixelHeightPerModuleSize = cameraHeight / viewportModuleSizeInUse;
 
         Vector2 adjustedMousePos = new Vector2(
             mousePos.x - cameraWidth * 0.5f,
@@ -100,8 +113,8 @@ public class PlayerCameraRig : MonoBehaviour
             cameraZ
         );
 
-        targetMouseOffset.x = Mathf.Clamp(targetMouseOffset.x, -maxCameraOffset, maxCameraOffset);
-        targetMouseOffset.y = Mathf.Clamp(targetMouseOffset.y, -maxCameraOffset, maxCameraOffset);
+        targetMouseOffset.x = Mathf.Clamp(targetMouseOffset.x, -maxCameraOffsetInUse, maxCameraOffsetInUse);
+        targetMouseOffset.y = Mathf.Clamp(targetMouseOffset.y, -maxCameraOffsetInUse, maxCameraOffsetInUse);
 
         currentMouseOffset = Vector3.SmoothDamp(
             currentMouseOffset,
@@ -133,5 +146,16 @@ public class PlayerCameraRig : MonoBehaviour
     {
         StopCamera();
         isCameraFollowingMouse = false;
+    }
+
+    void OnMouseWheelStart(float wheelValue)
+    {
+        // >0이면 위, <0이면 아래
+        // Debug.Log($"[CameraRig] Up or Down : {wheelValue}");
+        scrollValue = Mathf.Clamp(scrollValue + wheelValue, minScrollValue, maxScrollValue);
+
+        playerCamera.orthographicSize = originalOrthographicSize + orthographicSizePerScroll * scrollValue;
+        viewportModuleSizeInUse = viewportModuleSize * scrollValue;
+        maxCameraOffsetInUse = maxCameraOffset * scrollValue;
     }
 }
