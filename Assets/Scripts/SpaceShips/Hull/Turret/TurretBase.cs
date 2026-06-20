@@ -25,6 +25,7 @@ namespace ModuleSpaceShip.Runtime
         {
             if(Gun != null && turretThing.state == ModuleThing.State.Connected) RotateGunTowardMouse();
             if(firing) TryFire();
+            else CeaseFire();
         }
 
         public override void OnAttached(Transform parent, Vector3 position)
@@ -60,6 +61,7 @@ namespace ModuleSpaceShip.Runtime
 
         // 발사 함수, 질량병기와 에너지병기에서 각각 구현
         protected abstract void TryFire();
+        protected abstract void CeaseFire(); // 발사 중지 함수
 
         // 지정된 각도로 포구 회전
         private void RotateGunTowardMouse()

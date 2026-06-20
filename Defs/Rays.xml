@@ -1,0 +1,10 @@
+<Defs>
+    <Def Class="RayDef">
+		<defName>Ray</defName>
+		<label>Ray</label>
+		<displayName>광선</displayName>
+        <damage>4.0</damage>
+        <heatPerSec>3.0</heatPerSec>
+        <maxDistance>30.0</maxDistance>
+	</Def>
+</Defs>

@@ -15,7 +15,9 @@ public class PlayerCameraRig : MonoBehaviour
     [SerializeField] private float maxCameraOffset = 3f;
     private float maxCameraOffsetInUse;
     [SerializeField] private float offsetSmoothTime = 0.15f;
+    [Header("Scroll Variables")]
     [SerializeField] private float orthographicSizePerScroll = 1f;
+    [SerializeField] private float orthographicSizeCoefficient = 0.8f;
     [SerializeField] private float minScrollValue = 1f;
     [SerializeField] private float maxScrollValue = 10f;
     private float scrollValue = 1f;
@@ -154,7 +156,7 @@ public class PlayerCameraRig : MonoBehaviour
         // Debug.Log($"[CameraRig] Up or Down : {wheelValue}");
         scrollValue = Mathf.Clamp(scrollValue + wheelValue, minScrollValue, maxScrollValue);
 
-        playerCamera.orthographicSize = originalOrthographicSize + orthographicSizePerScroll * scrollValue;
+        playerCamera.orthographicSize = originalOrthographicSize + orthographicSizePerScroll * scrollValue * orthographicSizeCoefficient;
         viewportModuleSizeInUse = viewportModuleSize * scrollValue;
         maxCameraOffsetInUse = maxCameraOffset * scrollValue;
     }

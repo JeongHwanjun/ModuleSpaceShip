@@ -1,0 +1,20 @@
+<Defs>
+	<Def Class="EnergyTurretDef">
+		<defName>EnergyTurret</defName>
+		<label>EnergyTurret</label>
+		<DisplayName>에너지포탑</DisplayName>
+		<hullPoint>10</hullPoint>
+		<mass>1</mass>
+		<linearDamping>0</linearDamping>
+		<angularDamping>0</angularDamping>
+		<tier>0</tier>
+        <turret>
+            <rotationSpeed>180.0</rotationSpeed>
+			<angleThreshold>3.0</angleThreshold>
+			<maxHeat>15.0</maxHeat>
+            <coolPerSec>1.0</coolPerSec>
+            <overHeatCoolCoefficient>0.5</overHeatCoolCoefficient>
+            <rayDefName>Ray</rayDefName>
+        </turret>
+	</Def>
+</Defs>

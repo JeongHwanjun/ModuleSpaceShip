@@ -47,4 +47,8 @@ public class KineticTurret : TurretBase
         bulletScript.DesignateDef(bulletDef);
         bulletScript.InformShip(ship);
     }
+    protected override void CeaseFire()
+    {
+        // 딱히 할건 없음
+    }
 }

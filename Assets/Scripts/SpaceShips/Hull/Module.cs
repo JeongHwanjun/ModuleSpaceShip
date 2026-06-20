@@ -297,6 +297,11 @@ public abstract class Module : BaseMonobehaviour
         Destroy(gameObject);
     }
 
+    public Ship GetShip()
+    {
+        return ship;
+    }
+
     // ---- 디버그 ----
     [ContextMenu("Print Current State")]
     void PrintCurrentState()
