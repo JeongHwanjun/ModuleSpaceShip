@@ -53,5 +53,8 @@ namespace ModuleSpaceShip.Runtime
 
             return currentHullPoint;
         }
+
+        public float GetCurrentHullPoint(){ return currentHullPoint; }
+        public float GetMaxHullPoint(){ return maxHullPoint; }
     }
 }

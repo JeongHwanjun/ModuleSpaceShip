@@ -17,13 +17,13 @@ public abstract class Module : BaseMonobehaviour
     private Rigidbody2D rigid;
     protected Ship ship; // 부착된 함선 스크립트
     [SerializeField] private Collider2D col;
+    private HullPointGauge hpGauge;
 
     /* 적용 효과들 */
     private List<EffectBase> effects;
 
     /* 디버깅 요소들 */
     [SerializeField] private bool ShowDirection = false;
-    public GameObject DirectionIndicator;
 
     /* 물리 속성 스케일 */
     public float DetachForceScale = 1.0f;
@@ -51,6 +51,7 @@ public abstract class Module : BaseMonobehaviour
             Init(ThingFactory.CreateFromDefName(DefName));
         }
         rigid = GetComponent<Rigidbody2D>();
+        hpGauge = GetComponentInChildren<HullPointGauge>();
     }
     protected virtual void Start()
     {
@@ -59,11 +60,6 @@ public abstract class Module : BaseMonobehaviour
 
         // rigidbody 초기화
         InitializeRigidbody(rigid);
-    }
-
-    protected virtual void OnValidate()
-    {
-        if (DirectionIndicator != null) DirectionIndicator.SetActive(ShowDirection);
     }
 
     private void Update()
@@ -254,6 +250,9 @@ public abstract class Module : BaseMonobehaviour
             // 3. Destroy
             ModuleDestroyed();
         }
+
+        // 체력 UI 갱신
+        hpGauge.UpdateHullPoint(moduleThing.GetCurrentHullPoint(), moduleThing.GetMaxHullPoint());
     }
 
     // ---- Effect 부여 ----
