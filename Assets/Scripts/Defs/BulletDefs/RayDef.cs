@@ -25,5 +25,16 @@ namespace ModuleSpaceShip.Defs
             if(!float.TryParse(maxDistanceString, out maxDistance))
                 throw new Exception($"[RayDef] Invalid value for <maxDistance> : {maxDistanceString}");
         }
+
+        public override XElement SerializeDef()
+        {
+            XElement ray = new("bullet");
+            ray.Add(
+                new XElement("damage", damage),
+                new XElement("heatPerSec", heatPerSec),
+                new XElement("maxDistance", maxDistance)
+            );
+            return ray;
+        }
     }
 }

@@ -35,6 +35,8 @@ public abstract class Module : BaseMonobehaviour
     private bool initialized = false;
     private bool isBeginDestroy = false;
 
+    private GridPos gridPos = new GridPos();
+
     public virtual void Init(ThingBase thingBase)
     {
         // 생성될 때 실행되는 초기화
@@ -145,6 +147,7 @@ public abstract class Module : BaseMonobehaviour
         // 3. rigidbody 파괴
         Destroy(rigid);
         // 4. 만약 모듈이라면 자신의 상태에 맞게 코드를 변형함...
+        gridPos = new((int)position.x, (int)position.y);
         ship.OnModuleAttached(this);
     }
 
@@ -299,6 +302,15 @@ public abstract class Module : BaseMonobehaviour
     public Ship GetShip()
     {
         return ship;
+    }
+    public ModuleDef GetDef()
+    {
+        return moduleThing.def;
+    }
+    public GridPos GetGridPos()
+    {
+        if(ship != null) return gridPos;
+        else return new GridPos(int.MaxValue, int.MaxValue);
     }
 
     // ---- 디버그 ----

@@ -34,5 +34,7 @@ namespace ModuleSpaceShip.Defs
             if (child == null) return defaultValue;
             return (child.Value ?? "").Trim();
         }
+
+        public abstract XElement SerializeDef();
     }
 }

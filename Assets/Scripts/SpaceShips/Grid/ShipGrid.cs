@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using ModuleSpaceShip.Utilities;
+using System.Linq;
 
 public class ShipGrid : MonoBehaviour
 {
@@ -280,6 +281,12 @@ public class ShipGrid : MonoBehaviour
         // 해당 위치에 모듈이 없다면 null 반환
         if(!HasModule(targetPos)) return null;
         return Modules[targetPos];
+    }
+
+    public List<GameObject> GetModules()
+    {
+        List<GameObject> M = Modules.Values.ToList();
+        return M;
     }
 
     // ---- 코어 생성 ----

@@ -180,4 +180,10 @@ public abstract class Ship : MonoBehaviour
             command.thruster.SetThrusterFlameVisibility(command.throttle);
         }
     }
+
+    [ContextMenu("Save This Ship as 'PlayerShip'")]
+    void SaveThisShip()
+    {
+        ShipBlueprintSerializer.SerializeBlueprint(this);
+    }
 }

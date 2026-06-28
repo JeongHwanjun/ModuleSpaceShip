@@ -8,7 +8,6 @@ namespace ModuleSpaceShip.Defs
     public class EnergyTurretDef : TurretDefBase
     {
         public override Type thingType => typeof(EnergyTurretThing);
-
         public float maxHeat = 10.0f;
         public float coolPerSec = 1.0f;
         public float overHeatCoolCoefficient = 0.5f;
@@ -29,6 +28,35 @@ namespace ModuleSpaceShip.Defs
             if(string.IsNullOrWhiteSpace(rayDefNameString))
                 throw new Exception($"[EnergyTurretDef] Invalid value for <rayDefName> : {rayDefNameString}");
             else rayDefName = rayDefNameString.Trim();
+        }
+
+        public override XElement SerializeDef()
+        {
+            XElement e = base.SerializeDef();
+
+            AddModuleData(e);
+
+            return e;
+        }
+
+        protected override void AddModuleData(XElement e)
+        {
+            base.AddModuleData(e);
+            e.Add(
+                AddTurretData()
+            );
+        }
+
+        protected override XElement AddTurretData()
+        {
+            XElement turret = new("turret");
+            turret.Add(
+                new XElement("maxHeat",maxHeat),
+                new XElement("coolPerSec",coolPerSec),
+                new XElement("overHeatCoolCoefficient",overHeatCoolCoefficient),
+                new XElement("rayDefName",rayDefName)
+            );
+            return turret;
         }
     }
 }

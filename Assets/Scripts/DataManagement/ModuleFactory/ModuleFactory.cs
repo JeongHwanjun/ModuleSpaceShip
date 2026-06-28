@@ -2,6 +2,8 @@ using UnityEngine;
 using ModuleSpaceShip.Runtime;
 using ModuleSpaceShip.Defs;
 using Unity.VisualScripting;
+using System;
+using System.Collections.Generic;
 
 namespace ModuleSpaceShip.Runtime
 {
@@ -16,7 +18,7 @@ namespace ModuleSpaceShip.Runtime
             }
         }
 
-        [SerializeField] private Thing_GameObject GameObjectSO;
+        [SerializeField] private readonly Dictionary<string, GameObject> prefabCache;
 
         void Awake()
         {
@@ -25,8 +27,9 @@ namespace ModuleSpaceShip.Runtime
         }
 
 
-        public GameObject CreateModuleFromDef(string DefName)
+        public GameObject CreateModuleFromDef(string defName)
         {
+            /*
             // BaseMonobehaviour나 Module에서 Init()을 구현한 다음, 여기서 사용해서 GO를 Instantiate한 다음 반환함;;
             ThingBase thing = ThingFactory.CreateFromDefName(DefName);
             // thing의 타입으로 어떤 GO를 Instantiate 할지 결정
@@ -36,14 +39,46 @@ namespace ModuleSpaceShip.Runtime
                     InstantiateNewModule(GameObjectSO.HullPrefab, thing);
                     break;
             }
+            */
+
+            ModuleDef def = DefDatabase.Get<ModuleDef>(defName);
+            if(def == null)
+            {
+                Debug.LogError($"[ModuleFactory] Finding def Failed. defName : {defName}");
+                return null;
+            }
+            GameObject prefab = GetPrefab(def);
+            InstantiateNewModule(prefab, def);
 
             return null;
         }
 
-        private GameObject InstantiateNewModule(GameObject prefab, ThingBase thing)
+        private GameObject GetPrefab(ModuleDef def)
+        {
+            if (string.IsNullOrWhiteSpace(def.prefabPath))
+            {
+                Debug.LogError($"[ModuleFactory] Prefab path is empty. defName : {def.defName}");
+                return null;
+            }
+
+            if(prefabCache.TryGetValue(def.prefabPath, out GameObject cachedPrefab)) return cachedPrefab;
+
+            GameObject prefab = Resources.Load<GameObject>(def.prefabPath);
+            if(prefab == null)
+            {
+                Debug.LogError($"[ModuleFactory] Prefab load failed. defName : {def.defName}, path : {def.prefabPath}");
+                return null;
+            }
+
+            prefabCache.Add(def.prefabPath, prefab);
+            return prefab;
+        }
+
+        private GameObject InstantiateNewModule(GameObject prefab, ModuleDef def)
         {
             GameObject newModule = Instantiate(prefab);
             Module moduleScript = newModule.GetComponent<Module>();
+            ThingBase thing = ThingFactory.CreateFromDef(def);
             if(moduleScript != null)
             {
                 moduleScript.Init(thing);

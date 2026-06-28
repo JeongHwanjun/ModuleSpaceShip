@@ -3,6 +3,7 @@
         <defName>ExplosiveModule</defName>
 		<label>ExplosiveModule</label>
 		<displayName>폭탄</displayName>
+        <prefabPath>Assets/Prefabs/Ship/ExplosiveModule.prefab</prefabPath>
 		<hullPoint>10</hullPoint>
 		<mass>1</mass>
 		<linearDamping>0</linearDamping>

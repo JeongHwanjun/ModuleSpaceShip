@@ -13,5 +13,11 @@ namespace ModuleSpaceShip.Defs
         {
             base.LoadFromXml(e);
         }
+
+        public override XElement SerializeDef()
+        {
+            XElement ship = new("def");
+            return ship;
+        }
     }
 } 

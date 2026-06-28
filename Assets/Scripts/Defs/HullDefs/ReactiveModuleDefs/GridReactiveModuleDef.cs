@@ -12,5 +12,14 @@ namespace ModuleSpaceShip.Defs
             if(string.IsNullOrWhiteSpace(gridString)) throw new Exception($"[GridReactiveModuleDef] Invalid value for grid : {gridString}");
             else grid = gridString.Trim();
         }
+
+        protected override XElement AddReactionData()
+        {
+            XElement reaction = new("reaction");
+            reaction.Add(
+                new XElement("grid", grid)
+            );
+            return reaction;
+        }
     }
 }

@@ -7,7 +7,6 @@ namespace ModuleSpaceShip.Defs
     public class KineticTurretDef : TurretDefBase
     {
         public override Type thingType => typeof(KineticTurretThing);
-
         public float coolTime = 1.0f;
         public string bulletDefName = null;
 
@@ -20,6 +19,33 @@ namespace ModuleSpaceShip.Defs
             if(string.IsNullOrWhiteSpace(bulletDefNameString))
                 throw new Exception($"[KineticTurretDef] Invalid value for bulletDefName : {bulletDefNameString}");
             else bulletDefName = bulletDefNameString.Trim();
+        }
+
+        public override XElement SerializeDef()
+        {
+            XElement e = base.SerializeDef();
+
+            AddModuleData(e);
+
+            return e;
+        }
+
+        protected override void AddModuleData(XElement e)
+        {
+            base.AddModuleData(e);
+            e.Add(
+                AddTurretData()
+            );
+        }
+
+        protected override XElement AddTurretData()
+        {
+            XElement turret = new("turret");
+            turret.Add(
+                new XElement("coolTime",coolTime),
+                new XElement("bulletDefName",bulletDefName)
+            );
+            return turret;
         }
     }
 }

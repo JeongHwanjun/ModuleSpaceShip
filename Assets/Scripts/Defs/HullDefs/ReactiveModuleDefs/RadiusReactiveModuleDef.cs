@@ -11,5 +11,14 @@ namespace ModuleSpaceShip.Defs
             string radiusString = GetTag(e,"radius", "0");
             if(!float.TryParse(radiusString, out radius)) throw new Exception($"[RadiusReactiveModuleDef] Invalid value for radius : {radiusString}");
         }
+
+        protected override XElement AddReactionData()
+        {
+            XElement reaction = new("reaction");
+            reaction.Add(
+                new XElement("radius", radius)
+            );
+            return reaction;
+        }
     }
 }

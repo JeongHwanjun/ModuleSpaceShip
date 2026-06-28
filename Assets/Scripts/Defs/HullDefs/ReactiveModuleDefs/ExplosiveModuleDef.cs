@@ -22,5 +22,22 @@ namespace ModuleSpaceShip.Defs
             if(!float.TryParse(damageString, out damage))
                 throw new Exception($"[ExplosiveModuleDef] Invalid value for damage : {damageString}");
         }
+
+        protected override void AddModuleData(XElement e)
+        {
+            base.AddModuleData(e);
+            e.Add(
+                AddExplosionData()
+            );
+        }
+
+        protected XElement AddExplosionData()
+        {
+            XElement explosion = new("explosion");
+            explosion.Add(
+                new XElement("damage", damage)
+            );
+            return explosion;
+        }
     }
 }

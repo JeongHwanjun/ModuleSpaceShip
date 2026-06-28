@@ -22,5 +22,15 @@ namespace ModuleSpaceShip.Defs
             if(!float.TryParse(durationTimeString, out durationTime))
                 throw new Exception($"[HealingEffectDef] Invalid value for durationTime : {durationTimeString}");
         }
+
+        protected override XElement AddEffectData()
+        {
+            XElement effect = new("effect");
+            effect.Add(
+                new XElement("healAmount", healAmount),
+                new XElement("durationTime", durationTime)
+            );
+            return effect;
+        }
     }
 }

@@ -8,5 +8,11 @@ namespace ModuleSpaceShip.Defs
         {
             // 지정된 Collider를 사용하기 때문에 범위를 xml에서 가져오지는 않음
         }
+
+        protected override XElement AddReactionData()
+        {
+            XElement reaction = new("reaction");
+            return reaction;
+        }
     }
 }

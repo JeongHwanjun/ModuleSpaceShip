@@ -15,7 +15,14 @@ namespace ModuleSpaceShip.Defs
             if(reaction == null) throw new Exception($"[ReactiveModuleDef] ReactiveModuleDef requires <reaction> tag, but {defName} has no <reaction>.");
             LoadReactionData(reaction);
         }
-
+        protected override void AddModuleData(XElement e)
+        {
+            base.AddModuleData(e);
+            e.Add(
+                AddReactionData()
+            );
+        }
         protected abstract void LoadReactionData(XElement e);
+        protected abstract XElement AddReactionData();
     }
 }

@@ -15,7 +15,16 @@ namespace ModuleSpaceShip.Defs
                 throw new Exception($"[EffectDefBase] effect must have <effect> tag, but {defName} has no <effect>.");
             LoadEffectData(effect);
         }
+        public override XElement SerializeDef()
+        {
+            XElement e = new("Def");
+            e.Add(
+                AddEffectData()
+            );
+            return e;
+        }
 
         protected abstract void LoadEffectData(XElement effect);
+        protected abstract XElement AddEffectData();
     }
 }

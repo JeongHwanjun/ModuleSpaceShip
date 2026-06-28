@@ -44,14 +44,8 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
-  - name: HullPointGaugeBackground
+  - name: Hull
     uniqueID: 3312633979
-    locked: 0
-  - name: HullPointGauge
-    uniqueID: 3360638577
-    locked: 0
-  - name: HullEdge
-    uniqueID: 601038417
     locked: 0
   m_RenderingLayers:
   - Default

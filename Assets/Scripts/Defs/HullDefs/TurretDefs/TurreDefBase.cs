@@ -7,7 +7,7 @@ namespace ModuleSpaceShip.Defs
     [Serializable]
     public abstract class TurretDefBase : ModuleDef
     {
-        public uint Tier = 0;
+        public uint tier = 0;
         public float rotationSpeed = 1.0f;
         public float angleThreshold = 3.0f;
 
@@ -15,7 +15,7 @@ namespace ModuleSpaceShip.Defs
         {
             base.LoadFromXml(e);
             string TierString = GetTag(e, "tier", "0");
-            if(!uint.TryParse(TierString, out Tier)) throw new Exception($"[TurretDefBase] Invalid value for Tier : {TierString}");
+            if(!uint.TryParse(TierString, out tier)) throw new Exception($"[TurretDefBase] Invalid value for Tier : {TierString}");
             
             XElement Turret = e.Element("turret");
             if(Turret == null)
@@ -34,5 +34,26 @@ namespace ModuleSpaceShip.Defs
         }
 
         protected abstract void LoadTurretData(XElement TurretXml);
+
+        public override XElement SerializeDef()
+        {
+            XElement e = base.SerializeDef();
+
+            AddModuleData(e);
+
+            return e;
+        }
+
+        protected override void AddModuleData(XElement e)
+        {
+            base.AddModuleData(e);
+            e.Add(
+                new XElement("tier", tier),
+                new XElement("rotationSpeed", rotationSpeed),
+                new XElement("angleThreshold", angleThreshold)
+            );
+        }
+
+        protected abstract XElement AddTurretData();
     }
 } 

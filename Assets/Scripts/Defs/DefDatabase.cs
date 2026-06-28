@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace ModuleSpaceShip.Defs
 {
@@ -36,8 +37,10 @@ namespace ModuleSpaceShip.Defs
             {
                 return (T)def;
             }
+            Debug.LogError($"[DefDatabase] Def not found: {t.Name}('{defName}')");
 
-            throw new KeyNotFoundException($"Def not found: {t.Name}('{defName}')");
+            return null;
+            // throw new KeyNotFoundException($"Def not found: {t.Name}('{defName}')");
         }
 
         /// <summary>

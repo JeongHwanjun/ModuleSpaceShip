@@ -22,5 +22,15 @@ namespace ModuleSpaceShip.Defs
             if(!float.TryParse(speedString, out speed))
                 throw new Exception($"[BulletDef] Invalid value for speed : {speedString}");
         }
+
+        public override XElement SerializeDef()
+        {
+            XElement bullet = new("bullet");
+            bullet.Add(
+                new XElement("damage", damage),
+                new XElement("speed", speed)
+            );
+            return bullet;
+        }
     }
 }
