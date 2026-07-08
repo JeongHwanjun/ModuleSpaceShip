@@ -48,10 +48,14 @@ public class InputManager : MonoBehaviour
         cam = Camera.main;
         _mousePos = Vector2.zero;
         grabbedModule = null;
+        
+        // playerShip 생성 이벤트 구독
+        ShipBuilder.instance.OnPlayerShipBuildEnd += AssignCamera;
     }
 
     public void OnMouseMove(InputAction.CallbackContext ctx)
     {
+        if(cam == null) return; // 카메라가 없으면 스킵
         Vector2 pos = ctx.ReadValue<Vector2>();
         Vector2 target = cam.ScreenToWorldPoint(pos);
 
@@ -155,5 +159,10 @@ public class InputManager : MonoBehaviour
         float value = ctx.ReadValue<float>();
         Debug.Log($"[InputManager] MouseWheel : {ctx.ReadValue<float>()}, {ctx.phase}");
         OnMouseWheelStart?.Invoke(value);
+    }
+
+    private void AssignCamera()
+    {
+        cam = Camera.main;
     }
 }

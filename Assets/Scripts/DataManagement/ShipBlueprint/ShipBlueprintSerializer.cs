@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Xml.Linq;
 using ModuleSpaceShip.Defs;
 using Unity.VisualScripting;
@@ -11,12 +13,11 @@ public static class ShipBlueprintSerializer
     {
         // ship을 받아서 ShipGrid의 modules를 직렬화 해야 함
         XElement blueprint = new("blueprint");
-        string shipName = "playerShip"; // 아무튼 가져옴
-        string shipId = "101010"; // 아무튼 가져왔다고 가정
+        XElement shipBlueprint = new("ship");
+        string shipName = ship.shipName;
 
-        blueprint.Add(
-            new XElement("shipName", shipName),
-            new XElement("shipId", shipId)
+        shipBlueprint.Add(
+            new XElement("shipName", shipName)
         );
 
         ShipGrid shipGrid = ship.gameObject.GetComponentInChildren<ShipGrid>();
@@ -29,11 +30,15 @@ public static class ShipBlueprintSerializer
                 SerializeModule(module)
             );
         }
-        blueprint.Add(moduleBlueprints);
+        shipBlueprint.Add(moduleBlueprints);
+        blueprint.Add(shipBlueprint);
 
-        string blueprintFolderPath = Path.Combine(XMLPathUtilities.DefPath, "Blueprints");
+        string blueprintFolderPath = XMLPathUtilities.blueprintPath;
         if(!Directory.Exists(blueprintFolderPath)) Directory.CreateDirectory(blueprintFolderPath);
-        blueprint.Save(Path.Combine(blueprintFolderPath, "PlayerShip.xml"));
+        string blueprintFilePath = Path.Combine(blueprintFolderPath, "Blueprints.xml");
+        if(!File.Exists(blueprintFilePath)) File.Create(blueprintFilePath);
+        // 이 전에 blueprint 파일을 불러와서 거기의 root에 내용을 추가하는 방식으로 바꿔야 할 듯
+        blueprint.Save(Path.Combine(blueprintFolderPath, "Blueprints.xml"));
     }
 
     private static XElement SerializeModule(GameObject module)
@@ -62,8 +67,44 @@ public static class ShipBlueprintSerializer
         return module;
     }
 
-    public static void DeserializeBlueprint()
+    public static XElement DeserializeBlueprint()
     {
-        
+        return DeserializeBlueprintByName("playerShip");
+    }
+
+    public static XElement DeserializeBlueprintByName(string targetShipName)
+    {
+        XDocument blueprintFile = LoadFile();
+        XElement blueprint = ReadXML(blueprintFile);
+        return DeSerializeShip(blueprint, targetShipName);
+    }
+
+    private static XDocument LoadFile()
+    {
+        XDocument blueprintFile = XDocument.Load(Path.Combine(XMLPathUtilities.blueprintPath, "Blueprints.xml"));
+        return blueprintFile;
+    }
+    private static XElement ReadXML(XDocument file)
+    {
+        XElement root = file.Root;
+        if(root == null || !root.Name.LocalName.Equals("blueprint", System.StringComparison.OrdinalIgnoreCase))
+            throw new Exception($"[ShipBlueprintSerializer] Invalid root in '{root.Name.LocalName}'. Expected <blueprint>.");
+        return root;
+    }
+
+    private static XElement DeSerializeShip(XElement blueprints, string targetShipName)
+    {
+        List<XElement> ships = blueprints.Elements("ship").ToList();
+        // bluprints에서 지정한 shipName을 찾아서 반환함
+        foreach(XElement ship in ships)
+        {
+            XElement shipName = ship.Element("shipName");
+            Debug.Log(shipName.Value);
+            if(string.Equals(shipName.Value.Trim(), targetShipName)) return ship;
+        }
+
+        // 해당 shipName을 가진 blueprint를 찾지 못한 경우
+        Debug.LogWarning($"[ShipBlueprintSerializer] Could not find ship : {targetShipName}");
+        return null;
     }
 }

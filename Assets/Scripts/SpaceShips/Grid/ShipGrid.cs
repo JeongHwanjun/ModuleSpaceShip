@@ -35,7 +35,7 @@ public class ShipGrid : MonoBehaviour
         ship.OnTryUndock += OnTryUndock;
 
         // 코어 생성
-        SpawnCoreModule();
+        // SpawnCoreModule();
     }
 
     void OnDestroy()
@@ -84,17 +84,26 @@ public class ShipGrid : MonoBehaviour
         return true;
     }
 
-    // ---- 초기 Module 등록 (시작 선체 등) ----
+    // ---- Build시 초기 Module 등록 ----
     public bool TryPlaceModule(GridPos p, GameObject Module)
     {
         if (Module == null) return false;
-        if (IsOccupied(p)) return false;
+        if (IsOccupied(p))
+        {
+            if(HasModule(p)) return false; // Module이 점유중이라면 이번 부착은 무시함
+            else if (HasPort(p)) // Port가 점유중이라면 해당 Port를 삭제하고 진행
+            {
+                GameObject port = ports[p];
+                ports.Remove(p);
+                Destroy(port);
+            }
+        }
 
         Module.transform.SetParent(gridRoot, true);
         Module.transform.localPosition = GridToVector(p);
         Module.name = $"Module {p}";
         Module.tag = TagHandle.GetExistingTag("PlayerShip").ToString();
-        Module.GetComponent<Module>().OnAttached(gridRoot, Vector3.zero);
+        Module.GetComponent<Module>().OnAttached(gridRoot, GridToVector(p));
         Modules.Add(p, Module);
 
         // Module 놓인 후 주변 포트 후보 생성

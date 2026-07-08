@@ -3,7 +3,7 @@
 		<defName>KineticTurret</defName>
 		<label>KineticTurret</label>
 		<DisplayName>질량포탑</DisplayName>
-		<prefabPath>Assets/Prefabs/Ship/KineticTurret.prefab</prefabPath>
+		<prefabPath>Prefabs/Ship/KineticTurret</prefabPath>
 		<hullPoint>10</hullPoint>
 		<mass>1</mass>
 		<linearDamping>0</linearDamping>

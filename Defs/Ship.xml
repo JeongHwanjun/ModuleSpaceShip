@@ -3,6 +3,6 @@
 		<defName>Ship</defName>
 		<label>Ship</label>
 		<displayName>함선</displayName>
-		<prefabPath>Assets/Prefabs/Ship/Ship.prefab</prefabPath>
+		<prefabPath>Prefabs/Ship/Ship</prefabPath>
 	</Def>
 </Defs>

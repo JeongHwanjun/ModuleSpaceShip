@@ -44,6 +44,8 @@ public abstract class Module : BaseMonobehaviour
         initialized = true;
         effects = new();
     }
+    public void Init(ModuleDef def){Init(ThingFactory.CreateFromDef(def));}
+    public void Init(string defName){Init(ThingFactory.CreateFromDefName(defName));}
     protected virtual void Awake()
     {
         // 만약 Init이 실행되지 않았다면 여기서 실행함

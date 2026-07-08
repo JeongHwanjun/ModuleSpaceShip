@@ -18,7 +18,7 @@ namespace ModuleSpaceShip.Runtime
             }
         }
 
-        [SerializeField] private readonly Dictionary<string, GameObject> prefabCache;
+        [SerializeField] private readonly Dictionary<string, GameObject> prefabCache = new();
 
         void Awake()
         {
@@ -41,16 +41,19 @@ namespace ModuleSpaceShip.Runtime
             }
             */
 
-            ModuleDef def = DefDatabase.Get<ModuleDef>(defName);
+            ModuleDef def = (ModuleDef)DefDatabase.GetAny(defName);
             if(def == null)
             {
                 Debug.LogError($"[ModuleFactory] Finding def Failed. defName : {defName}");
                 return null;
             }
             GameObject prefab = GetPrefab(def);
-            InstantiateNewModule(prefab, def);
-
-            return null;
+            return InstantiateNewModule(prefab, def);
+        }
+        public GameObject CreateModuleFromDef(ModuleDef def)
+        {
+            GameObject prefab = GetPrefab(def);
+            return InstantiateNewModule(prefab, def);
         }
 
         private GameObject GetPrefab(ModuleDef def)
@@ -78,10 +81,9 @@ namespace ModuleSpaceShip.Runtime
         {
             GameObject newModule = Instantiate(prefab);
             Module moduleScript = newModule.GetComponent<Module>();
-            ThingBase thing = ThingFactory.CreateFromDef(def);
             if(moduleScript != null)
             {
-                moduleScript.Init(thing);
+                moduleScript.Init(def);
                 return newModule;
             }
             Debug.LogError($"[ModuleFactory] Cannot find component 'Module' : {newModule}");

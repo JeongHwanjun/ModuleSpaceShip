@@ -3,7 +3,7 @@
 		<defName>Hull</defName>
 		<label>Hull</label>
 		<displayName>선체</displayName>
-		<prefabPath>Assets/Prefabs/Ship/Hull.prefab</prefabPath>
+		<prefabPath>Prefabs/Ship/Hull</prefabPath>
 		<hullPoint>10</hullPoint>
 		<mass>1</mass>
 		<linearDamping>0</linearDamping>

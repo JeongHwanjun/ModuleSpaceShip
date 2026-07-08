@@ -46,7 +46,7 @@ public class PlayerCameraRig : MonoBehaviour
 
         if(target == null)
         {
-            target = GameObject.Find("PlayerShip").transform;
+            target = GameObject.FindGameObjectWithTag("PlayerShip").transform;
         }
 
         viewportModuleSizeInUse = viewportModuleSize;

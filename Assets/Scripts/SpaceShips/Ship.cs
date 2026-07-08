@@ -10,6 +10,7 @@ public abstract class Ship : MonoBehaviour
     [DefName("ShipDef")]
     [SerializeField] private string def;
     [SerializeField] private ShipThing shipThing;
+    [SerializeField] public string shipName = "ship";
     public Vector2 heading
     {
         get
@@ -181,9 +182,15 @@ public abstract class Ship : MonoBehaviour
         }
     }
 
-    [ContextMenu("Save This Ship as 'PlayerShip'")]
+    [ContextMenu("Save This Ship as shipName")]
     void SaveThisShip()
     {
         ShipBlueprintSerializer.SerializeBlueprint(this);
+    }
+
+    [ContextMenu("Print Deserialized ship 'playerShip'")]
+    void PrintShip()
+    {
+        Debug.Log($"[Ship] ship XML : {ShipBlueprintSerializer.DeserializeBlueprint()}");
     }
 }

@@ -3,7 +3,7 @@
         <defName>ThrusterModule</defName>
 		<label>ThrusterModule</label>
 		<displayName>추진기</displayName>
-        <prefabPath>Assets/Prefabs/Ship/Thruster.prefab</prefabPath>
+        <prefabPath>Prefabs/Ship/Thruster</prefabPath>
 		<hullPoint>10</hullPoint>
 		<mass>1</mass>
 		<linearDamping>0</linearDamping>
