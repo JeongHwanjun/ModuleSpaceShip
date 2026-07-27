@@ -8,6 +8,7 @@
 		<mass>1</mass>
 		<linearDamping>0</linearDamping>
 		<angularDamping>0</angularDamping>
+		<isCritical>1</isCritical>
 		<tier>0</tier>
 	</Def>
 </Defs>

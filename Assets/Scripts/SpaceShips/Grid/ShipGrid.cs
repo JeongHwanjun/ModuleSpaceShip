@@ -98,11 +98,11 @@ public class ShipGrid : MonoBehaviour
                 Destroy(port);
             }
         }
-
+        string shipTag = ship.tag;
         Module.transform.SetParent(gridRoot, true);
         Module.transform.localPosition = GridToVector(p);
         Module.name = $"Module {p}";
-        Module.tag = TagHandle.GetExistingTag("PlayerShip").ToString();
+        Module.tag = TagHandle.GetExistingTag(string.Equals(shipTag, "PlayerShip") ? "PlayerModule" : "ComputerModule").ToString();
         Module.GetComponent<Module>().OnAttached(gridRoot, GridToVector(p));
         Modules.Add(p, Module);
 

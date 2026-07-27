@@ -13,6 +13,7 @@ namespace ModuleSpaceShip.Defs
         public float linearDamping = 0f; // 저항
         public float angularDamping = 0f; // 회전 저항
         public float gravityScale = 0f; // 중력 영향 X
+        public bool isCritical = false; // 치명 모듈 여부
 
         public override void LoadFromXml(XElement e)
         {
@@ -34,6 +35,10 @@ namespace ModuleSpaceShip.Defs
             if(!float.TryParse(linearDampingString, out linearDamping)) throw new Exception($"[HullBaseDef] Invalid value for linearDamping : {linearDampingString}");
             string angularDampingString = GetTag(e, "angularDamping", "0");
             if(!float.TryParse(angularDampingString, out angularDamping)) throw new Exception($"[HullBaseDef] Invalid value for angularDamping : {angularDampingString}");
+            string isCriticalString = GetTag(e, "isCritical", "0");
+            int isCriticalInt;
+            if (!int.TryParse(isCriticalString, out isCriticalInt)) throw new Exception($"[HullBaseDef] Invalid value for isCritical : {isCriticalString}");
+            isCritical = isCriticalInt > 0 ? true : false;
         }
 
         public override XElement SerializeDef()

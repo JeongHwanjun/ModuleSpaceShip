@@ -21,6 +21,7 @@ public class ShipBuilder : MonoBehaviour
     [SerializeField] private GameObject playerShip;
     [SerializeField] private GameObject normalShip;
     [SerializeField] private GameObject cameraRig;
+    bool playerAlreadyInstantiated = false;
 
     // Events
     public event Action OnPlayerShipBuildEnd;
@@ -42,17 +43,19 @@ public class ShipBuilder : MonoBehaviour
         GameObject newShip = BuildShip(ship);
         newShip.transform.position = Vector3.zero;
         // playerShip이 처음으로 생성됐을 경우엔 카메라도 같이 생성함
-        Instantiate(cameraRig);
-
-        // PlayerShip 생성이라면 이벤트 발생
-        OnPlayerShipBuildEnd?.Invoke();
+        if(ship.Element("shipName").Value.Contains("player"))
+        {
+            Instantiate(cameraRig);
+            OnPlayerShipBuildEnd?.Invoke();
+        }
     }
 
     private GameObject BuildShip(XElement shipXML)
     {
         // Ship을 생성하고, 해당 ship에 Module을 부착해 반환하는 함수
         // 1. Ship을 생성함, 일단은 playerShip을 생성하지만 주후에 어떤 Ship을 생성해야 하는지 결정 과정 필요
-        GameObject newShip = DecideShip();
+        string shipName = shipXML.Element("shipName").Value;
+        GameObject newShip = DecideShip(shipName);
         ShipGrid newShipGrid = newShip.GetComponentInChildren<ShipGrid>();
         List<XElement> modulesXML = shipXML.Element("modules").Elements("module").ToList();
 
@@ -80,31 +83,31 @@ public class ShipBuilder : MonoBehaviour
         ModuleDef targetDef = (ModuleDef)DefDatabase.GetAny(targetDefName);
 
         GameObject newModule = moduleFactory.CreateModuleFromDef(targetDef.defName);
-        // ModuleFactory에서 알아서 Init까지 돌려서 반환해줌;; 다음 과정은 필요 없음 ㅎㅎ
-        /*
-        Module newModuleScript = newModule.GetComponent<Module>();
-        if (!newModuleScript)
-        {
-            Debug.LogError($"[ShipBuilder] Invalid Module : {newModule} has no 'Module' Component");
-            Destroy(newModule);
-            return null;
-        }
-        newModuleScript.Init(targetDef);
-        */
 
         return newModule;
     }
 
-    private GameObject DecideShip()
+    private GameObject DecideShip(string shipName)
     {
-        return Instantiate(playerShip, Vector3.zero, Quaternion.identity);
+        if(!shipName.Contains("player") || playerAlreadyInstantiated) return Instantiate(normalShip, Vector3.zero, Quaternion.identity);
+        else{
+            playerAlreadyInstantiated = true;
+            return Instantiate(playerShip, Vector3.zero, Quaternion.identity);
+        }
     }
 
     // --- 디버그 ----
     [ContextMenu("Deploy new 'PlayerShip'")]
     public void DeployPlayerShip()
     {
-        XElement newShipXML = ShipBlueprintSerializer.DeserializeBlueprint();
+        XElement newShipXML = ShipBlueprintSerializer.DeserializeBlueprintByName("playerShip");
+        DeployShip(newShipXML);
+    }
+
+    [ContextMenu("Deploy new 'ComputerShip'")]
+    public void DeployComputerShip()
+    {
+        XElement newShipXML = ShipBlueprintSerializer.DeserializeBlueprintByName("computerShip1");
         DeployShip(newShipXML);
     }
 }

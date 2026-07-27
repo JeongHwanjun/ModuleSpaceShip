@@ -48,6 +48,10 @@ public abstract class Ship : MonoBehaviour
     {
         OnTryUndock?.Invoke(oldModule, col);
     }
+    protected void OnModuleDetachedByDestroy(GameObject oldModule, Collider2D col)
+    {
+        OnTryUndock?.Invoke(oldModule, col);
+    }
     protected void OnMouseClickStartWithVoid()
     {
         OnTryFireStart?.Invoke();
@@ -62,7 +66,11 @@ public abstract class Ship : MonoBehaviour
         // 선체가 파괴되었을 때 해당 선체에서 호출함
         // 0. 코어 선체인지 확인(코어 선체일 경우 사망)
         // 1. 분리 진행
+        OnModuleDetachedByDestroy(oldModule.gameObject, null);
+        // oldModule.OnDetached(false);
         OnModuleDetached(oldModule);
+
+        // 현재 구현 자체가 안됨;; 재설계해야 함
     }
 
     public void OnModuleAttached(Module newModule)
@@ -71,6 +79,7 @@ public abstract class Ship : MonoBehaviour
         // 1. 해당 선체의 정보 참조
         // 2. 정보를 바탕으로 Thing의 정보 갱신
         // 3. rigidbody 정보 갱신
+        if(!rigid) rigid = GetComponent<Rigidbody2D>();
         float m = newModule.GetDefMass();
         float M = rigid.mass;                 // 붙기 전 질량
         Vector3 c = rigid.centerOfMass;       // 붙기 전 COM (로컬)
@@ -87,6 +96,7 @@ public abstract class Ship : MonoBehaviour
 
     public void OnModuleDetached(Module oldModule)
     {
+        // 함선 정보만 갱신
         float m = oldModule.GetDefMass();
         float M = rigid.mass;                 // 떼기 전 질량
         Vector3 c = rigid.centerOfMass;
@@ -96,9 +106,6 @@ public abstract class Ship : MonoBehaviour
         rigid.mass = Mathf.Max(0.0001f, newM);
         rigid.centerOfMass = (newM > 0f) ? ((M * c - m * r) / newM) : Vector3.zero;
         Debug.Log($"[Ship] COM : {rigid.centerOfMass}");
-
-        // ShipGrid에 모듈 분리 작업 지시
-        //OnTryUndock?.Invoke(oldModule.gameObject.GetComponent<Collider2D>());
 
         RefreshShip();
     }
@@ -191,6 +198,6 @@ public abstract class Ship : MonoBehaviour
     [ContextMenu("Print Deserialized ship 'playerShip'")]
     void PrintShip()
     {
-        Debug.Log($"[Ship] ship XML : {ShipBlueprintSerializer.DeserializeBlueprint()}");
+        Debug.Log($"[Ship] ship XML : {ShipBlueprintSerializer.DeserializeBlueprintByName("playerShip")}");
     }
 }

@@ -7,6 +7,9 @@ TagManager:
   - DockPort
   - PlayerShip
   - NeutralModule
+  - PlayerModule
+  - ComputerShip
+  - ComputerModule
   layers:
   - Default
   - TransparentFX

@@ -21,8 +21,9 @@ namespace ModuleSpaceShip.Runtime
             base.Start();
         }
 
-        protected virtual void Update()
+        protected override void Update()
         {
+            base.Update();
             if(Gun != null && turretThing.state == ModuleThing.State.Connected) RotateGunTowardMouse();
             if(firing) TryFire();
             else CeaseFire();

@@ -66,7 +66,7 @@ public abstract class Module : BaseMonobehaviour
         InitializeRigidbody(rigid);
     }
 
-    private void Update()
+    protected virtual void Update()
     {
         // 매초 적용되는 버프를 적용
         for(int i = effects.Count -1; i >= 0; i--)
@@ -140,7 +140,7 @@ public abstract class Module : BaseMonobehaviour
         transform.localRotation = Quaternion.identity;
         ship = GetComponentInParent<Ship>();
         gameObject.name = $"Module ({position.x}, {position.y})"; // 디버깅용 이름변경
-        gameObject.tag = TagHandle.GetExistingTag("PlayerShip").ToString();
+        // gameObject.tag = TagHandle.GetExistingTag("PlayerShip").ToString();
         // 마우스 위치 참조해 방향 설정
         SetHeading();
         // 1. 입력 이벤트 구독
@@ -257,7 +257,8 @@ public abstract class Module : BaseMonobehaviour
         }
 
         // 체력 UI 갱신
-        hpGauge.UpdateHullPoint(moduleThing.GetCurrentHullPoint(), moduleThing.GetMaxHullPoint());
+        if(!hpGauge) Debug.LogError($"[Module] My name : '{name}'");
+        else hpGauge.UpdateHullPoint(moduleThing.GetCurrentHullPoint(), moduleThing.GetMaxHullPoint());
     }
 
     // ---- Effect 부여 ----

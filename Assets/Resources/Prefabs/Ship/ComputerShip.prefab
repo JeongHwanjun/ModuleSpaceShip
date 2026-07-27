@@ -10,10 +10,10 @@ GameObject:
   m_Component:
   - component: {fileID: 7890333224827808561}
   - component: {fileID: 5846063375954530009}
-  - component: {fileID: -6995598366425398508}
+  - component: {fileID: -1328350871043519418}
   m_Layer: 0
-  m_Name: PlayerShip
-  m_TagString: PlayerShip
+  m_Name: ComputerShip
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -61,7 +61,7 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &-6995598366425398508
+--- !u!114 &-1328350871043519418
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -70,10 +70,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 6665383973574365376}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3fec812b1564eac4f996be72d3bc175d, type: 3}
+  m_Script: {fileID: 11500000, guid: 7eb24f0b7df72ab48b89d55b26252d0b, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerShip
-  def: Ship
+  m_EditorClassIdentifier: Assembly-CSharp::ComputerShip
+  def: 
   shipName: ship
   moduleColliders: []
 --- !u!1001 &4896745500237400260
