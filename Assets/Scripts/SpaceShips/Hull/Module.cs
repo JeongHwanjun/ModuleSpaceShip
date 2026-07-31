@@ -278,6 +278,11 @@ public abstract class Module : BaseMonobehaviour
     {
         // 파괴 플래그 표시
         RequestDestroy();
+
+        if (moduleThing.isCritical)
+        {
+            ship.OnShipDestroyed();
+        }
     }
 
     public float GetDefMass()

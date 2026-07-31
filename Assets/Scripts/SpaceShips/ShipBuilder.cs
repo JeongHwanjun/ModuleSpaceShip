@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
@@ -21,6 +22,7 @@ public class ShipBuilder : MonoBehaviour
     [SerializeField] private GameObject playerShip;
     [SerializeField] private GameObject normalShip;
     [SerializeField] private GameObject cameraRig;
+    // private InputManager inputManager;
     bool playerAlreadyInstantiated = false;
 
     // Events
@@ -31,9 +33,17 @@ public class ShipBuilder : MonoBehaviour
         if(_instance == null) _instance = this;
         else Destroy(gameObject);
 
-        Debug.Log($"playerShip path : {AssetDatabase.GetAssetPath(playerShip)}");
     }
-    // [SerializeField] private GameObject cameraRig;
+    void Start()
+    {
+        // inputManager = InputManager.Instance;
+        StartCoroutine(AfterStart());
+    }
+    private IEnumerator AfterStart()
+    {
+        yield return null;
+        DeployPlayerShip();
+    }
     // 제공받은 XElement를 기반으로 Ship을 생성
     // 해당 Ship에 module을 생성해 부착하여 배치함
     public void DeployShip(XElement ship)

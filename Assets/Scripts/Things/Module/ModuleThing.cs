@@ -29,6 +29,8 @@ namespace ModuleSpaceShip.Runtime
 
         private float maxHullPoint;
         private float currentHullPoint;
+        private bool _isCritical;
+        public bool isCritical {get => _isCritical;}
 
         protected override void OnInitTyped()
         {
@@ -37,6 +39,7 @@ namespace ModuleSpaceShip.Runtime
 
             maxHullPoint = _def.hullPoint;
             currentHullPoint = maxHullPoint;
+            _isCritical = _def.isCritical;
             _state = State.Floating;
             _direction = Direction.up;
         }

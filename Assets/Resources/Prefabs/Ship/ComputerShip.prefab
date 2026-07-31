@@ -73,7 +73,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7eb24f0b7df72ab48b89d55b26252d0b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ComputerShip
-  def: 
+  def: Ship
   shipName: ship
   moduleColliders: []
 --- !u!1001 &4896745500237400260

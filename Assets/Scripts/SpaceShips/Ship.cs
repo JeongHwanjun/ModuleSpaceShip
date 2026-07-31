@@ -24,6 +24,7 @@ public abstract class Ship : MonoBehaviour
     private readonly List<Thruster> thrusters = new();
     private Vector2 currentMoveIntent;
     private float currentTurnIntent;
+    private bool isBeginDestroy = false;
     public Collider2D[] moduleColliders; // 함선을 구성하고 있는 module의 collider2d;
 
 
@@ -69,8 +70,6 @@ public abstract class Ship : MonoBehaviour
         OnModuleDetachedByDestroy(oldModule.gameObject, null);
         // oldModule.OnDetached(false);
         OnModuleDetached(oldModule);
-
-        // 현재 구현 자체가 안됨;; 재설계해야 함
     }
 
     public void OnModuleAttached(Module newModule)
@@ -110,9 +109,22 @@ public abstract class Ship : MonoBehaviour
         RefreshShip();
     }
 
-    protected void OnShipDestroyed()
+    public void OnShipDestroyed()
     {
         // 함선 파괴
+        shipGrid.OnShipDestroyed();
+
+        RequestShipDestroy();
+    }
+
+    private void RequestShipDestroy()
+    {
+        isBeginDestroy = true;
+    }
+
+    private void FinalizeDestroy()
+    {
+        Destroy(gameObject);
     }
 
     protected void OnMovementStart(Vector2 movement, float torque)
@@ -187,6 +199,11 @@ public abstract class Ship : MonoBehaviour
             command.thruster.Ignite(rigid, command.throttle);
             command.thruster.SetThrusterFlameVisibility(command.throttle);
         }
+    }
+
+    void Update()
+    {
+        if(isBeginDestroy) FinalizeDestroy();
     }
 
     [ContextMenu("Save This Ship as shipName")]

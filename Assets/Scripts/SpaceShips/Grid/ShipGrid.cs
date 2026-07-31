@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using ModuleSpaceShip.Utilities;
 using System.Linq;
+using Unity.VisualScripting;
 
 public class ShipGrid : MonoBehaviour
 {
@@ -152,6 +153,23 @@ public class ShipGrid : MonoBehaviour
         return true;
     }
 
+    // ---- 파괴시 모든 모듈 분리 ----
+    public void OnShipDestroyed()
+    {
+        Debug.Log($"[ShipGrid] Ship {ship.name} has destroyed, Undock its modules");
+        int i = 0;
+        while(Modules.Count > 0)
+        {
+            TryUndockModule(Modules.First().Key);
+            i++;
+            if (i > 500)
+            {
+                Debug.LogError($"[ShipGrid] Too many Modules while destroying ship {ship.name}. Procedure aborted.");
+                break;
+            }
+        }
+    }
+
     // ---- 언도킹 이벤트 대응 ----
     private void OnTryUndock(GameObject oldModule, Collider2D oldModuleHitbox)
     {
@@ -173,13 +191,13 @@ public class ShipGrid : MonoBehaviour
             Debug.LogError($"[ShipGrid] No such Module in Modules : {ModulePos}");
             return false;
         }
-
+/*
         if(ModulePos.Equals(new GridPos(0, 0)))
         {
             Debug.LogWarning($"[ShipGrid] Cannot Undock Core");
             return false;
         }
-
+*/
         // Module 분리
         Debug.Log($"[ShipGrid] Trying detach Module : {targetModule}");
         DetachModule(ModulePos, targetModule.transform, false);
