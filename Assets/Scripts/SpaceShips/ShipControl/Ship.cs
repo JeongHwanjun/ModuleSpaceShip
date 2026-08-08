@@ -62,6 +62,24 @@ public abstract class Ship : MonoBehaviour
         OnTryFireStop?.Invoke();
     }
 
+    public void SetControlIntent(ShipControlIntent intent)
+    {
+        currentMoveIntent = intent.movement;
+        currentTurnIntent = intent.turn;
+
+        if(intent.fire)
+            OnTryFireStart?.Invoke();
+        else
+            OnTryFireStop?.Invoke();
+    }
+
+    public void ClearControlIntent()
+    {
+        currentMoveIntent = Vector2.zero;
+        currentTurnIntent = 0f;
+        OnTryFireStop?.Invoke();
+    }
+
     public void OnModuleDestroyed(Module oldModule)
     {
         // 선체가 파괴되었을 때 해당 선체에서 호출함
@@ -127,7 +145,7 @@ public abstract class Ship : MonoBehaviour
         Destroy(gameObject);
     }
 
-    protected void OnMovementStart(Vector2 movement, float torque)
+    public void OnSetCurrentIntent(Vector2 movement, float torque)
     {
         Debug.Log($"[Ship] Received data : {movement}, {torque}");
         currentMoveIntent = movement;

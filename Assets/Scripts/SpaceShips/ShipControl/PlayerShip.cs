@@ -8,17 +8,11 @@ public class PlayerShip : Ship
         inputManager = InputManager.Instance;
         inputManager.OnMouseReleaseWithNeutralModule += OnMouseReleaseWithModule;
         inputManager.OnMouseClickWithPlayerModule += OnMouseClickWithPlayerModule;
-        inputManager.OnMouseClickStartWithVoid += OnMouseClickStartWithVoid;
-        inputManager.OnMouseClickEndWithVoid += OnMouseClickEndWithVoid;
-        inputManager.OnMovementStart += OnMovementStart;
     }
 
     void OnDestroy()
     {
         inputManager.OnMouseReleaseWithNeutralModule -= OnMouseReleaseWithModule;
         inputManager.OnMouseClickWithPlayerModule -= OnMouseClickWithPlayerModule;
-        inputManager.OnMouseClickStartWithVoid -= OnMouseClickStartWithVoid;
-        inputManager.OnMouseClickEndWithVoid -= OnMouseClickEndWithVoid;
-        inputManager.OnMovementStart -= OnMovementStart;
     }
 }
