@@ -3,7 +3,7 @@
 		<defName>Core</defName>
 		<label>Core</label>
 		<displayName>코어</displayName>
-		<prefabPath>Prefabs/Ship/Core</prefabPath>
+		<prefabPath>Prefabs/Ship/Modules/Core</prefabPath>
 		<hullPoint>10</hullPoint>
 		<mass>1</mass>
 		<linearDamping>0</linearDamping>

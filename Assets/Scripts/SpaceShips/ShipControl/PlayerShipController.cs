@@ -6,6 +6,8 @@ public class PlayershipContoller : MonoBehaviour
     private Ship playerShip;
 
     private bool isFiring = false;
+    private Vector2 currentMovement= Vector2.zero;
+    private float currentTorque = 0f;
     void Start()
     {
         playerShip = GetComponent<Ship>();
@@ -22,12 +24,27 @@ public class PlayershipContoller : MonoBehaviour
             Debug.LogError($"[PlayerShipController] 'playerShip' is not assigned, but tried to access it.");
             return;
         }
-        ShipControlIntent shipControlIntent = new(movement, torque, isFiring);
-        playerShip.SetControlIntent(shipControlIntent);
+        currentMovement = movement;
+        currentTorque = torque;
+        refreshShipControlIntent();
     }
 
-    void SetFiringTrue(){ isFiring = true; }
-    void SetFiringFalse(){ isFiring = false; }
+    void SetFiringTrue()
+    {
+        isFiring = true;
+        refreshShipControlIntent();
+    }
+    void SetFiringFalse()
+    {
+        isFiring = false;
+        refreshShipControlIntent();
+    }
+
+    void refreshShipControlIntent()
+    {
+        ShipControlIntent controlIntent = new(currentMovement, currentTorque, isFiring);
+        playerShip.SetControlIntent(controlIntent);
+    }
 
     void OnDestroy()
     {

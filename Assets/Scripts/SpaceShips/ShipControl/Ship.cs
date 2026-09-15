@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using ModuleSpaceShip.Runtime;
 using UnityEngine;
@@ -7,6 +8,64 @@ using UnityEngine;
 // 함선 그 자체를 뜻하는 클래스
 public abstract class Ship : MonoBehaviour
 {
+    // 실행 중 식별자. 저장/불러오기용 영구 ID가 아니다.
+    public int ShipId { get; private set; }
+    public bool IsDestroyed => isBeginDestroy;
+    private ShipManager registeredManager;
+
+    [SerializeField] private FactionId faction = FactionId.Independent;
+    public FactionId Faction => faction;
+
+    // 함선별 관계의 원본. 세력 테이블은 생성 시 기본값으로만 사용한다.
+    private readonly Dictionary<Ship, RelationType> relations = new();
+    private ReadOnlyDictionary<Ship, RelationType> readOnlyRelations;
+    public IReadOnlyDictionary<Ship, RelationType> Relations =>
+        readOnlyRelations ??= new ReadOnlyDictionary<Ship, RelationType>(relations);
+    public event Action RelationsChanged;
+
+    public RelationType GetRelation(Ship other)
+    {
+        return other != null && relations.TryGetValue(other, out var relation)
+            ? relation : RelationType.Neutral;
+    }
+
+    /// <summary>이 함선이 상대를 보는 관계만 변경한다. 상대의 관계는 별도로 변경한다.</summary>
+    public void SetRelation(Ship other, RelationType relation)
+    {
+        if (!Enum.IsDefined(typeof(RelationType), relation))
+            throw new ArgumentOutOfRangeException(nameof(relation));
+        if (IsDestroyed || other == null || other == this || other.IsDestroyed ||
+            registeredManager == null || !registeredManager.Contains(this) ||
+            !registeredManager.Contains(other)) return;
+
+        if (relations.TryGetValue(other, out RelationType current) && current == relation) return;
+        relations[other] = relation;
+        NotifyRelationsChanged();
+    }
+
+    internal void RemoveRelation(Ship other)
+    {
+        if (relations.Remove(other)) NotifyRelationsChanged();
+    }
+
+    internal void ClearRelations()
+    {
+        if (relations.Count == 0) return;
+        relations.Clear();
+        NotifyRelationsChanged();
+    }
+
+    private void NotifyRelationsChanged()
+    {
+        // 구독자 예외가 Manager의 등록/제거 절차를 중단시키지 않게 한다.
+        if (RelationsChanged == null) return;
+        foreach (Action handler in RelationsChanged.GetInvocationList())
+        {
+            try { handler(); }
+            catch (Exception exception) { Debug.LogException(exception, this); }
+        }
+    }
+
     [DefName("ShipDef")]
     [SerializeField] private string def;
     [SerializeField] private ShipThing shipThing;
@@ -34,19 +93,33 @@ public abstract class Ship : MonoBehaviour
     public event Action OnTryFireStart;
     public event Action OnTryFireStop;
 
-    void Awake()
+    protected virtual void Awake()
     {
         shipThing = (ShipThing)ThingFactory.CreateFromDefName(def);
         rigid = GetComponent<Rigidbody2D>();
         shipGrid = GetComponentInChildren<ShipGrid>();
+
+        ShipId = GetInstanceID();
+        registeredManager = ShipManager.Instance;
+        if (registeredManager == null)
+        {
+            Debug.LogError("[Ship] 함선 생성 전에 활성 ShipManager를 배치해야 합니다.", this);
+        }
+        else if (!registeredManager.Register(this))
+        {
+            registeredManager = null;
+            Debug.LogError("[Ship] ShipManager 등록 실패.", this);
+        }
     }
 
     protected void OnMouseReleaseWithModule(GameObject module, Collider2D col)
     {
+        if (IsDestroyed) return;
         OnTryDockAtPort?.Invoke(module, col);
     }
     protected void OnMouseClickWithPlayerModule(GameObject oldModule, Collider2D col)
     {
+        if (IsDestroyed) return;
         OnTryUndock?.Invoke(oldModule, col);
     }
     protected void OnModuleDetachedByDestroy(GameObject oldModule, Collider2D col)
@@ -55,6 +128,7 @@ public abstract class Ship : MonoBehaviour
     }
     protected void OnMouseClickStartWithVoid()
     {
+        if (IsDestroyed) return;
         OnTryFireStart?.Invoke();
     }
     protected void OnMouseClickEndWithVoid()
@@ -64,6 +138,7 @@ public abstract class Ship : MonoBehaviour
 
     public void SetControlIntent(ShipControlIntent intent)
     {
+        if (IsDestroyed) return;
         currentMoveIntent = intent.movement;
         currentTurnIntent = intent.turn;
 
@@ -129,10 +204,35 @@ public abstract class Ship : MonoBehaviour
 
     public void OnShipDestroyed()
     {
-        // 함선 파괴
-        shipGrid.OnShipDestroyed();
+        if (IsDestroyed) return;
 
+        // Grid 정리 중 재진입하더라도 파괴/제거 알림을 중복 처리하지 않는다.
         RequestShipDestroy();
+        UnregisterFromManager(ShipRemovalReason.Destroyed);
+        try
+        {
+            ClearControlIntent();
+        }
+        finally
+        {
+            try
+            {
+                // 최신 코드의 모듈 정리 흐름을 유지한다.
+                if (shipGrid != null) shipGrid.OnShipDestroyed();
+            }
+            finally
+            {
+                // 활성 함선은 기존처럼 Update에서 실제 파괴한다.
+                // 비활성 함선에는 Update가 없으므로 여기서 파괴를 예약한다.
+                if (!isActiveAndEnabled) FinalizeDestroy();
+            }
+        }
+    }
+
+    // 이전 ShipManager 사용 예제와도 호환되는 진입점.
+    public void DestroyShip()
+    {
+        OnShipDestroyed();
     }
 
     private void RequestShipDestroy()
@@ -145,8 +245,30 @@ public abstract class Ship : MonoBehaviour
         Destroy(gameObject);
     }
 
+    protected virtual void OnDisable()
+    {
+        // 파괴 요청 뒤 Update 전에 비활성화된 경우에도 파괴를 완료한다.
+        // 단순 비활성화는 등록을 유지한다.
+        if (IsDestroyed) FinalizeDestroy();
+    }
+
+    protected virtual void OnDestroy()
+    {
+        // 일반 Destroy/씬 제거 대응. 전투 파괴로 이미 해제했다면 아무 일도 하지 않는다.
+        UnregisterFromManager(ShipRemovalReason.Removed);
+    }
+
+    private void UnregisterFromManager(ShipRemovalReason reason)
+    {
+        ShipManager manager = registeredManager;
+        registeredManager = null;
+        if (manager != null)
+            manager.Unregister(ShipId, this, reason);
+    }
+
     public void OnSetCurrentIntent(Vector2 movement, float torque)
     {
+        if (IsDestroyed) return;
         Debug.Log($"[Ship] Received data : {movement}, {torque}");
         currentMoveIntent = movement;
         currentTurnIntent = torque;
@@ -202,9 +324,9 @@ public abstract class Ship : MonoBehaviour
         return gridColliders.ToArray();
     }
 
-    void FixedUpdate()
+    protected virtual void FixedUpdate()
     {
-        if (!rigid) return;
+        if (IsDestroyed || !rigid) return;
 
         var commands = thrusterCalculator.GetCommands(currentMoveIntent, currentTurnIntent);
 
@@ -219,7 +341,7 @@ public abstract class Ship : MonoBehaviour
         }
     }
 
-    void Update()
+    protected virtual void Update()
     {
         if(isBeginDestroy) FinalizeDestroy();
     }

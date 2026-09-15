@@ -3,7 +3,7 @@
 		<defName>EnergyTurret</defName>
 		<label>EnergyTurret</label>
 		<DisplayName>에너지포탑</DisplayName>
-		<prefabPath>Prefabs/Ship/EnergyTurret</prefabPath>
+		<prefabPath>Prefabs/Ship/Modules/EnergyTurret</prefabPath>
 		<hullPoint>10</hullPoint>
 		<mass>1</mass>
 		<linearDamping>0</linearDamping>

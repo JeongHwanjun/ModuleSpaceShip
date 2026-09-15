@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 7890333224827808561}
   - component: {fileID: 5846063375954530009}
   - component: {fileID: -1328350871043519418}
+  - component: {fileID: 4218357828302887567}
   m_Layer: 0
   m_Name: ComputerShip
   m_TagString: Untagged
@@ -73,9 +74,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7eb24f0b7df72ab48b89d55b26252d0b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ComputerShip
+  faction: 2
   def: Ship
   shipName: ship
   moduleColliders: []
+--- !u!114 &4218357828302887567
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6665383973574365376}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b7eb8b0b76e41a4296200365435d402, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ComputerShipController
 --- !u!1001 &4896745500237400260
 PrefabInstance:
   m_ObjectHideFlags: 0

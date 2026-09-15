@@ -10,8 +10,9 @@ public class PlayerShip : Ship
         inputManager.OnMouseClickWithPlayerModule += OnMouseClickWithPlayerModule;
     }
 
-    void OnDestroy()
+    protected override void OnDestroy()
     {
+        base.OnDestroy();
         inputManager.OnMouseReleaseWithNeutralModule -= OnMouseReleaseWithModule;
         inputManager.OnMouseClickWithPlayerModule -= OnMouseClickWithPlayerModule;
     }
