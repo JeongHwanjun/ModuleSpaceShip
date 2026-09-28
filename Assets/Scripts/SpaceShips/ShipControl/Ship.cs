@@ -14,9 +14,25 @@ public abstract class Ship : MonoBehaviour
     private ShipManager registeredManager;
 
     [SerializeField] private FactionId faction = FactionId.Independent;
-    public FactionId Faction => faction;
+    public FactionId Faction
+    {
+        get => faction;
+        set => SetFaction(value);
+    }
 
-    // 함선별 관계의 원본. 세력 테이블은 생성 시 기본값으로만 사용한다.
+    /// <summary>소속을 변경하고, 자신과 다른 함선 양쪽의 관계를 세력 테이블로 갱신한다.</summary>
+    public void SetFaction(FactionId newFaction)
+    {
+        if (!Enum.IsDefined(typeof(FactionId), newFaction))
+            throw new ArgumentOutOfRangeException(nameof(newFaction));
+        if (IsDestroyed) return;
+
+        faction = newFaction;
+        // Awake 이전에는 소속만 설정하고, 등록 시 Manager가 관계를 초기화한다.
+        if (registeredManager != null) registeredManager.RefreshFactionRelations(this);
+    }
+
+    // 함선별 관계의 원본. 생성 및 소속 변경 시 세력 테이블의 관계를 적용한다.
     private readonly Dictionary<Ship, RelationType> relations = new();
     private ReadOnlyDictionary<Ship, RelationType> readOnlyRelations;
     public IReadOnlyDictionary<Ship, RelationType> Relations =>

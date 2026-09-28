@@ -24,6 +24,8 @@ public sealed class ShipManager : MonoBehaviour
     [SerializeField] private FactionRelationTable factionRelations;
 
     private readonly Dictionary<int, Ship> ships = new();
+    private readonly Dictionary<int, FactionId> registeredFactions = new();
+    private readonly List<Ship> factionCheckBuffer = new();
     private ReadOnlyDictionary<int, Ship> readOnlyShips;
     private bool shuttingDown;
 
@@ -69,6 +71,19 @@ public sealed class ShipManager : MonoBehaviour
 
         ships.Add(ship.ShipId, ship);
         // 등록 이벤트가 전달될 때에는 양쪽 함선의 관계가 모두 준비되어 있다.
+        RefreshFactionRelations(ship);
+        NotifyRegistered(ship);
+        return true;
+    }
+
+    internal void RefreshFactionRelations(Ship ship)
+    {
+        if (shuttingDown || !Contains(ship)) return;
+        if (registeredFactions.TryGetValue(ship.ShipId, out FactionId previous) &&
+            previous == ship.Faction) return;
+
+        registeredFactions[ship.ShipId] = ship.Faction;
+        // 변경된 함선과의 관계만 초기화한다. 나머지 함선끼리의 개별 관계는 보존한다.
         foreach (Ship other in new List<Ship>(ships.Values))
         {
             if (other == ship || other == null || other.IsDestroyed) continue;
@@ -78,8 +93,16 @@ public sealed class ShipManager : MonoBehaviour
             ship.SetRelation(other, relation);
             other.SetRelation(ship, relation);
         }
-        NotifyRegistered(ship);
-        return true;
+    }
+
+    private void Update()
+    {
+        // Inspector는 프로퍼티 setter를 거치지 않는다. 비활성 함선도 등록되어 있으므로
+        // Manager에서 변경을 감지하고 Controller의 LateUpdate 이전에 관계를 갱신한다.
+        CopyShipsTo(factionCheckBuffer);
+        foreach (Ship ship in factionCheckBuffer)
+            RefreshFactionRelations(ship);
+        factionCheckBuffer.Clear();
     }
 
     internal bool Unregister(int shipId, Ship ship, ShipRemovalReason reason)
@@ -89,6 +112,7 @@ public sealed class ShipManager : MonoBehaviour
             return false;
 
         ships.Remove(shipId); // 이벤트 안에서도 조회 결과가 제거 상태여야 한다.
+        registeredFactions.Remove(shipId);
         foreach (Ship other in new List<Ship>(ships.Values))
             if (other != null) other.RemoveRelation(ship);
         ship.ClearRelations();
@@ -127,6 +151,7 @@ public sealed class ShipManager : MonoBehaviour
         Instance = null;
         var remaining = new List<KeyValuePair<int, Ship>>(ships);
         ships.Clear();
+        registeredFactions.Clear();
         foreach (var entry in remaining)
             if (entry.Value != null) entry.Value.ClearRelations();
         foreach (var entry in remaining)
